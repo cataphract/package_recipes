@@ -1,0 +1,26 @@
+--- bin/startGroovy	2014-06-11 15:53:40.000000000 +0200
++++ bin/startGroovy.patched	2014-06-23 17:27:22.660400164 +0200
+@@ -106,22 +106,7 @@
+ 
+ # Attempt to set GROOVY_HOME if it is not already set.
+ if [ -z "$GROOVY_HOME" -o ! -d "$GROOVY_HOME" ] ; then
+-    # Resolve links: $0 may be a link to groovy's home.
+-    PRG="$0"
+-    # Need this for relative symlinks.
+-    while [ -h "$PRG" ] ; do
+-        ls=`ls -ld "$PRG"`
+-        link=`expr "$ls" : '.*-> \(.*\)$'`
+-        if expr "$link" : '/.*' > /dev/null; then
+-            PRG="$link"
+-        else
+-            PRG=`dirname "$PRG"`"/$link"
+-        fi
+-    done
+-    SAVED="`pwd`"
+-    cd "`dirname \"$PRG\"`/.."
+-    GROOVY_HOME="`pwd -P`"
+-    cd "$SAVED"
++    GROOVY_HOME="/usr/share/groovy"
+ fi
+ 
+ # Set the default Groovy config if no specific one is mentioned.

@@ -1,0 +1,50 @@
+#!/bin/bash
+
+set -e
+
+function usage {
+  echo "Syntax: <rpm/deb> <groovy version>" >&2
+  exit 1
+}
+
+test "$#" = 2  || usage
+test "$1" = rpm -o "$1" = deb || usage
+
+cd /tmp
+test -f groovy-binary-${2}.zip || \
+  wget "http://dl.bintray.com/groovy/maven/groovy-binary-${2}.zip"
+
+D="groovy-${2}"
+if [[ -d $D ]]; then
+  rm -rf "$D"
+  unzip "groovy-binary-${2}.zip"
+fi
+
+cd "$D"
+# some changes in bin/
+rm bin/*.bat
+patch -p0 < /vagrant/startGroovy.conf.patch
+
+mkdir -p root/usr
+mkdir -p root/usr/share/groovy
+mv bin root/usr
+mv lib conf root/usr/share/groovy
+
+if [[ $1 = deb ]]; then
+  DEP_ARGS=('-d' 'java-runtime')
+fi
+
+cd root
+fpm \
+  --description 'Agile dynamic language for the Java Virtual Machine' \
+  -a noarch \
+  "${DEP_AGS[@]}" \
+  --version "$2" \
+  -n groovy \
+  -s dir \
+  -t $1 \
+  usr
+
+find . -name '*.'"$1" -exec mv '{}' /vagrant \;
+
+# vim: et ts=2 sw=2 ai:
