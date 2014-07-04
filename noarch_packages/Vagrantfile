@@ -9,7 +9,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   provision_script = <<-eos
     apt-get install -y ruby-dev unzip rpm
-	gem install fpm
+	  gem install fpm
   eos
 
 	config.vm.provision "shell", inline: provision_script
