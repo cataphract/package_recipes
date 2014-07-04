@@ -8,9 +8,11 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.box = "ubuntu/trusty64"
 
   provision_script = <<-eos
-    apt-get install -y ruby-dev unzip rpm
-	  gem install fpm
+    apt-get install -y ruby-dev unzip rpm bsdtar
+    gem install fpm
   eos
 
 	config.vm.provision "shell", inline: provision_script
+
+	config.vm.synced_folder "../include/", "/vagrant/include"
 end

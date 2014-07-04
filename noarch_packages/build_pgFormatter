@@ -1,0 +1,17 @@
+#!/bin/bash
+
+set -e
+
+function usage {
+  echo "Syntax: <rpm/deb>" >&2
+  exit 1
+}
+
+test "$#" = 1  || usage
+test "$1" = rpm -o "$1" = deb || usage
+
+cd /tmp
+rm -rf pgFormatter-master
+
+wget -O - http://github.com/darold/pgFormatter/archive/master.tar.gz | tar xzf - 
+cd pgFormatter-master
