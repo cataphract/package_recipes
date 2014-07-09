@@ -7,7 +7,7 @@ DESTDIR = /tmp/dest
 PKGDIR = /vagrant
 
 .PHONY: all clean fetch standard_fetch package standard_package \
-        extract standard_extract build
+        extract standard_extract build install_builddepends
 
 ifndef ITERATION
 ITERATION = 1
@@ -105,12 +105,17 @@ standard_extract: fetch $(BUILDDIR)
 SDESTDIR = $(DESTDIR)/$(SUBDIR)
 #no standard_build
 
+ifdef BUILDDEPENDS
+install_builddepends:
+	sudo apt-get install -y $(BUILDDEPENDS)
+endif
+
 standard_package: build $(SDESTDIR)
 	cd $(PKGDIR) && $(FPM_CMD)
 
 fetch: $(CACHEDIR)
 extract: $(BUILDDIR) fetch
-build: $(BUILDDIR) $(DESTDIR) extract
+build: $(BUILDDIR) $(DESTDIR) extract install_builddepends
 package: $(PKGDIR) build
 
 clean:
