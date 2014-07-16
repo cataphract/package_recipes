@@ -84,12 +84,14 @@ endif
 
 all: build package
 
-$(BUILDDIR) $(CACHEDIR) $(DESTDIR) $(PKGDIR):
-	mkdir -p '$@'
+WORKING_DIRS := $(foreach d,$(BUILDDIR) $(CACHEDIR) $(DESTDIR) $(PKGDIR),$(d)/.keep)
+$(WORKING_DIRS):
+	mkdir -p '$(dir $@)'
+	touch '$@'
 
 FETCHED_FILE ?= $(notdir $(SOURCE_URL))
 FETCHED_FILE_PATH = $(CACHEDIR)/$(FETCHED_FILE)
-$(FETCHED_FILE_PATH): $(CACHEDIR)
+$(FETCHED_FILE_PATH): $(CACHEDIR)/.keep
 	wget -O $(FETCHED_FILE_PATH) $(SOURCE_URL)
 
 standard_fetch: $(FETCHED_FILE_PATH)
@@ -97,7 +99,7 @@ standard_fetch: $(FETCHED_FILE_PATH)
 SUBDIR ?= $(NAME)-$(VERSION)
 SBUILDDIR = $(BUILDDIR)/$(SUBDIR)
 
-standard_extract: fetch $(BUILDDIR)
+standard_extract: fetch $(BUILDDIR)/.keep
 	mkdir -p $(SBUILDDIR)
 	bsdtar --strip-components=1 -C $(SBUILDDIR) \
 		-xf '$(CACHEDIR)/$(FETCHED_FILE)'
@@ -113,10 +115,10 @@ endif
 standard_package: build $(SDESTDIR)
 	cd $(PKGDIR) && $(FPM_CMD)
 
-fetch: $(CACHEDIR)
-extract: $(BUILDDIR) fetch
-build: $(BUILDDIR) $(DESTDIR) extract install_builddepends
-package: $(PKGDIR) build
+fetch: $(CACHEDIR)/.keep
+extract: $(BUILDDIR)/.keep fetch
+build: $(BUILDDIR)/.keep $(DESTDIR)/.keep extract install_builddepends
+package: $(PKGDIR)/.keep build
 
 clean:
 	rm -rf '$(BUILDDIR)/$(SUBDIR)'
