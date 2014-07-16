@@ -10,9 +10,7 @@ PKGDIR = /vagrant
         extract standard_extract build install_builddepends
 .DELETE_ON_ERROR:
 
-ifndef ITERATION
-ITERATION = 1
-endif
+ITERATION ?= 1
 
 NULL :=
 SPACE := $(NULL) $(NULL)

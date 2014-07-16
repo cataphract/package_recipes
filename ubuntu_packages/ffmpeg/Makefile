@@ -1,5 +1,6 @@
 NAME         := ffmpeg
 VERSION      := 2.2.4
+ITERATION    := 2
 SOURCE_URL   := http://ffmpeg.org/releases/$(NAME)-$(VERSION).tar.bz2
 FETCHED_FILE := $(NAME)-$(VERSION).tar.gz
 DEPENDS      := "libass4" "libfreetype6" "libgpac2" "libsdl1.2debian" \
@@ -108,6 +109,7 @@ build_x264 build_fdk_aac build_libvpx: extract install_builddepends
 build: build_x264 build_fdk_aac build_libvpx
 	cd $(SBUILDDIR) && \
 		PKG_CONFIG_PATH='$(DEPS_INSTALL_DIR)/lib/pkgconfig' ./configure \
+		--prefix=/usr \
 		--cc=clang \
 		--cxx=clang++ \
 		--extra-cflags="-I$(DEPS_INSTALL_DIR)/include" \
