@@ -8,6 +8,7 @@ PKGDIR = /vagrant
 
 .PHONY: all clean fetch standard_fetch package standard_package \
         extract standard_extract build install_builddepends
+.DELETE_ON_ERROR:
 
 ifndef ITERATION
 ITERATION = 1
@@ -92,7 +93,7 @@ $(WORKING_DIRS):
 FETCHED_FILE ?= $(notdir $(SOURCE_URL))
 FETCHED_FILE_PATH = $(CACHEDIR)/$(FETCHED_FILE)
 $(FETCHED_FILE_PATH): $(CACHEDIR)/.keep
-	wget -O $(FETCHED_FILE_PATH) $(SOURCE_URL)
+	curl -L -f -o $(FETCHED_FILE_PATH) $(SOURCE_URL)
 
 standard_fetch: $(FETCHED_FILE_PATH)
 
