@@ -15,4 +15,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 	config.vm.provision "shell", inline: provision_script
 
 	config.vm.synced_folder "../include/", "/vagrant/include"
+
+	config.vm.provider "virtualbox" do |v|
+		v.cpus = 4
+	end
 end
