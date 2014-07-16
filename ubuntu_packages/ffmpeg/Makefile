@@ -18,11 +18,6 @@ PACKAGE_DESCRIPTION := FFmpeg is a complete, cross-platform solution to \
 
 include ../include/base.mk
 
-CFLAGS := -O2 -g
-CXX_FLAGS := -O2 -g
-export CFLAGS
-export CXX_FLAGS
-
 DEPS_INSTALL_DIR := $(BUILDDIR)/ffmpeg-libs
 
 $(DEPS_INSTALL_DIR): $(BUILDDIR)
