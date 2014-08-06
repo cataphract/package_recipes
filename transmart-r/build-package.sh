@@ -3,6 +3,9 @@
 set -e
 set -x
 
+VERSION="3.0.3.$(date +%Y%m%d)"
+ITERATION=2
+
 cd /opt/transmart-data/R
 export R_PREFIX=/opt/R
 export R_FLAGS="-O2"
@@ -17,11 +20,11 @@ PHPRC=/vagrant make install_rserve_upstart
 
 if [[ $(facter operatingsystem) = 'Ubuntu' ]]; then
   PACKAGE_TYPE=deb
-  DEPS=('libcairo2' 'xfonts-base' 'libgfortran3' 'libpcre3')
+  DEPS=('libcairo2' 'xfonts-base' 'libgfortran3' 'libgomp1' 'libreadline6')
 else
   PACKAGE_TYPE=rpm
   DEPS=('cairo' 'xorg-x11-fonts-misc' 'xorg-x11-fonts-Type1'
-        'libgfortan' 'pcre')
+        'libgfortan' 'readline')
 fi
 
 DEP_ARGS=()
@@ -33,9 +36,10 @@ cd /vagrant
 fpm \
   --description 'R installation for tranSMART' \
   -a native \
-  "${DEP_AGS[@]}" \
-  --version "3.0.1.$(date +%Y%m%d)" \
-  -n 'transmart-R'  \
+  "${DEP_ARGS[@]}" \
+  --version "$VERSION" \
+  --iteration "$ITERATION" \
+  -n 'transmart-r'  \
   -s dir \
   -t $PACKAGE_TYPE \
   --config-files /etc/default/rserve \
