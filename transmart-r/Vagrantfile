@@ -9,9 +9,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   end
 
   config.vm.provider "virtualbox" do |v|
-		v.cpus = 4
-		v.memory = 3000
-	end
+    v.cpus = 4
+    v.memory = 3000
+  end
 
   config.vm.provision :shell, :path => "shell/bootstrap.sh"
   config.vm.provision "puppet"
