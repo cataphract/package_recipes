@@ -2,6 +2,7 @@ if $::operatingsystem == 'Ubuntu' {
     $native_packages = [
         'libcairo2-dev',
         'libxt-dev',
+        'libreadline-dev',
         'ruby-dev',
         'php5-cli',
         'build-essential',
@@ -15,6 +16,7 @@ if $::operatingsystem == 'Ubuntu' {
         'cairo-devel',
         'libX11-devel',
         'libXt-devel',
+        'readline-devel',
         'rubygems',
         'ruby-devel',
         'php',
