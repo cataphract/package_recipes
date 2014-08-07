@@ -24,13 +24,17 @@ if [[ $(facter operatingsystem) = 'Ubuntu' ]]; then
 else
   PACKAGE_TYPE=rpm
   DEPS=('cairo' 'xorg-x11-fonts-misc' 'xorg-x11-fonts-Type1'
-        'libgfortan' 'readline')
+        'libgfortan' 'readline' 'libgomp')
 fi
 
 DEP_ARGS=()
 for d in "${DEPS[@]}"; do
   DEP_ARGS+=('-d' "$d")
 done
+
+if [[ $PACKAGE_TYPE = 'rpm' ]]; then
+  ln -s lib64 /opt/R/lib
+fi
 
 cd /vagrant
 fpm \
