@@ -32,10 +32,6 @@ for d in "${DEPS[@]}"; do
   DEP_ARGS+=('-d' "$d")
 done
 
-if [[ $PACKAGE_TYPE = 'rpm' ]]; then
-  ln -s lib64 /opt/R/lib
-fi
-
 cd /vagrant
 fpm \
   --description 'R installation for tranSMART' \
