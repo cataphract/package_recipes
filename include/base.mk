@@ -1,4 +1,3 @@
-# based on disqus/fpm-recipes
 
 TOP := $(CURDIR)
 BUILDDIR = /tmp/build
@@ -81,7 +80,7 @@ else
 FPM_CMD = fpm -t $(TARGET_FORMAT) -s $(FPM_SOURCE) $(FPM_ARGS) $(NAME)
 endif
 
-all: build package
+all: package
 
 WORKING_DIRS := $(foreach d,$(BUILDDIR) $(CACHEDIR) $(DESTDIR) $(PKGDIR),$(d)/.keep)
 $(WORKING_DIRS):
