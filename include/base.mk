@@ -105,9 +105,15 @@ standard_extract: fetch $(BUILDDIR)/.keep
 SDESTDIR = $(DESTDIR)/$(SUBDIR)
 #no standard_build
 
+ifeq ($(shell test -f /usr/bin/apt-get || echo yum),yum)
+PKG_MANAGER := yum
+else
+PKG_MANAGER := apt-get
+endif
+
 ifdef BUILDDEPENDS
 install_builddepends:
-	sudo apt-get install -y $(BUILDDEPENDS)
+	sudo $(PKG_MANAGER) install -y $(BUILDDEPENDS)
 endif
 
 standard_package: build $(SDESTDIR)
