@@ -15,14 +15,15 @@ build: create_virtualenv
 
 VIRTUALENV_ACTIVATE := . $(SDESTDIR)/bin/activate
 
-ifdef VIRTUALENV_BUILDDEPENDS
-install_venv_builddepends: create_virtualenv
+ifneq ($(VIRTUALENV_BUILDDEPENDS)$(VIRTUALENV_DEPENDS)1,1)
+install_venv_depends: create_virtualenv
 	mkdir -p $(SDESTDIR)
-	$(VIRTUALENV_ACTIVATE) && pip install $(VIRTUALENV_BUILDDEPENDS)
+	$(VIRTUALENV_ACTIVATE) && \
+		pip install $(VIRTUALENV_BUILDDEPENDS) $(VIRTUALENV_DEPENDS)
 
-build: install_venv_builddepends
+build: install_venv_depends
 
-.PHONY: install_venv_builddepends
+.PHONY: install_venv_depends
 endif
 
 FINAL_VENV_DIR := /usr/share/python/$(NAME)-$(VERSION)
@@ -39,10 +40,28 @@ virtualenv_pip_build: install_virtualenv_tools
 	mkdir -p $(SDESTDIR)/$(FINAL_VENV_DIR)
 	mv $(SDESTDIR)_/* $(SDESTDIR)/$(FINAL_VENV_DIR)
 	rm -r $(SDESTDIR)_/
-	$(MAKE) symlink_targets
+	$(MAKE) symlink_targets maybe_use_system_python
 
 symlink_targets: $(VENV_SYMLINK_TARGETS)
-.PHONY: symlink_targets
+
+ifdef VIRTUALENV_SYS_PYTHON
+FPM_ARGS += -a noarch -d python2.7
+PERC := %
+maybe_use_system_python:
+	cd $(SDESTDIR)/$(FINAL_VENV_DIR)/bin && \
+		rm python && \
+		ln -s activate_this.py sitecustomize.py && \
+		printf '$(PERC)s\n\n$(PERC)s\n$(PERC)s\nexec /usr/bin/python2.7 "$$@"\n' \
+			'#!/bin/bash' \
+			'DIR="$$(cd "$$(dirname "$${BASH_SOURCE[0]}")" && pwd)"' \
+			'export PYTHONPATH="$$DIR:$$PYTHONPATH"' > python && \
+		chmod +x python
+else
+maybe_use_system_python:
+	$(info Using embedded python binary, result will not be portable)
+endif
+
+.PHONY: symlink_targets maybe_use_system_python
 
 $(VENV_SYMLINK_TARGETS):
 	@[ -e $(SDESTDIR)/$(FINAL_VENV_DIR)/bin/$(notdir $@) ] || { \

@@ -1,16 +1,20 @@
 NAME         := gdrivefs
-VERSION      = 0.13.14
+VERSION      := 0.13.14
+ITERATION    := 2
 SOURCE_URL   := https://github.com/dsoprea/GDriveFS/archive/0.13.14.tar.gz
 FETCHED_FILE := $(NAME)-$(VERSION).tar.gz
 BUILDDEPENDS := git
-#virtualenv includes python binary
-#FPM_ARGS     := -a noarch
+DEPENDS      := fuse
+ifeq ($(TARGET_FORMAT),rpm)
+DEPENDS      += libfuse
+endif
 
 PACKAGE_URL := https://github.com/dsoprea/GDriveFS
 PACKAGE_DESCRIPTION := An innovative FUSE wrapper for Google Drive
 
 include ../include/base.mk
 
+VIRTUALENV_SYS_PYTHON   := 1
 VIRTUALENV_BUILDDEPENDS := ez-setup
 VIRTUALENV_BIN_SYMLINKS := gdfs gdfstool
 PIP_OPTIONS := --allow-unverified antlr-python-runtime --allow-external antlr-python-runtime
