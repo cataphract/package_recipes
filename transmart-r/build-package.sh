@@ -24,7 +24,7 @@ if [[ $(facter operatingsystem) = 'Ubuntu' ]]; then
 else
   PACKAGE_TYPE=rpm
   DEPS=('cairo' 'xorg-x11-fonts-misc' 'xorg-x11-fonts-Type1'
-        'libgfortan' 'readline' 'libgomp')
+        'libgfortran' 'readline' 'libgomp')
 fi
 
 DEP_ARGS=()
