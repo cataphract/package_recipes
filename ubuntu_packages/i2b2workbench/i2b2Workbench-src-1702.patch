@@ -1,0 +1,865 @@
+diff --git a/src/.gitignore b/src/.gitignore
+new file mode 100644
+index 0000000..d6c1194
+--- /dev/null
++++ b/src/.gitignore
+@@ -0,0 +1,2 @@
++*.swp
++target/
+diff --git a/src/edu.harvard.i2b2.eclipse.features.core/build.properties b/src/edu.harvard.i2b2.eclipse.features.core/build.properties
+index 82ab19c..5159f62 100644
+--- a/src/edu.harvard.i2b2.eclipse.features.core/build.properties
++++ b/src/edu.harvard.i2b2.eclipse.features.core/build.properties
+@@ -1 +1,3 @@
+ bin.includes = feature.xml
++#root.folder. not supported by tycho
++root=file:../edu.harvard.i2b2.eclipse/i2b2workbench.properties,target/rootfiles
+diff --git a/src/edu.harvard.i2b2.eclipse.features.core/feature.xml b/src/edu.harvard.i2b2.eclipse.features.core/feature.xml
+index c94f336..8a7247b 100644
+--- a/src/edu.harvard.i2b2.eclipse.features.core/feature.xml
++++ b/src/edu.harvard.i2b2.eclipse.features.core/feature.xml
+@@ -386,6 +386,8 @@ Version 2.1 - 1/15/08
+ 
+    <plugin
+          id="org.eclipse.core.net.win32.x86"
++         os="win32"
++         arch="x86"
+          download-size="0"
+          install-size="0"
+          version="1.0.100.I20100511-0800"
+@@ -393,6 +395,16 @@ Version 2.1 - 1/15/08
+          unpack="false"/>
+ 
+    <plugin
++         id="org.eclipse.core.net.linux.x86_64"
++         os="linux"
++         arch="x86_64"
++         download-size="0"
++         install-size="0"
++         version="0.0.0"
++         fragment="true"
++         unpack="false"/>
++
++   <plugin
+          id="org.eclipse.core.runtime"
+          download-size="0"
+          install-size="0"
+@@ -535,6 +547,8 @@ Version 2.1 - 1/15/08
+ 
+    <plugin
+          id="org.eclipse.equinox.security.win32.x86"
++         os="win32"
++         arch="x86"
+          download-size="0"
+          install-size="0"
+          version="1.0.200.v20100503"
+@@ -627,6 +641,8 @@ Version 2.1 - 1/15/08
+ 
+    <plugin
+          id="org.eclipse.swt.win32.win32.x86"
++         os="win32"
++         arch="x86"
+          download-size="0"
+          install-size="0"
+          version="3.6.2.v3659c"
+@@ -634,6 +650,16 @@ Version 2.1 - 1/15/08
+          unpack="false"/>
+ 
+    <plugin
++         id="org.eclipse.swt.gtk.linux.x86_64"
++         os="linux"
++         arch="x86_64"
++         download-size="0"
++         install-size="0"
++         version="0.0.0"
++         fragment="true"
++         unpack="false"/>
++
++   <plugin
+          id="org.eclipse.ui"
+          download-size="0"
+          install-size="0"
+@@ -677,6 +703,8 @@ Version 2.1 - 1/15/08
+ 
+    <plugin
+          id="org.eclipse.update.core.win32"
++         os="win32"
++         arch="x86"
+          download-size="0"
+          install-size="0"
+          version="3.2.200.v20100512"
+diff --git a/src/edu.harvard.i2b2.eclipse.features.core/pom.xml b/src/edu.harvard.i2b2.eclipse.features.core/pom.xml
+new file mode 100644
+index 0000000..7c0626c
+--- /dev/null
++++ b/src/edu.harvard.i2b2.eclipse.features.core/pom.xml
+@@ -0,0 +1,43 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
++    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
++  <modelVersion>4.0.0</modelVersion>
++  <parent>
++    <groupId>edu.harvard.i2b2.eclipse</groupId>
++    <artifactId>src</artifactId>
++    <version>0.0.1-SNAPSHOT</version>
++  </parent>
++  <groupId>edu.harvard.i2b2.eclipse</groupId>
++  <artifactId>edu.harvard.i2b2.eclipse.features.core</artifactId>
++  <version>1.7.02</version>
++  <packaging>eclipse-feature</packaging>
++
++  <build>
++    <plugins>
++      <plugin>
++        <artifactId>maven-resources-plugin</artifactId>
++        <version>2.6</version>
++        <executions>
++          <execution>
++            <id>copy-artifacts</id>
++            <phase>validate</phase>
++            <goals>
++              <goal>copy-resources</goal>
++            </goals>
++            <configuration>
++              <outputDirectory>${basedir}/target/rootfiles/endorsed_lib</outputDirectory>
++              <resources>
++                <resource>
++                  <directory>${basedir}/../edu.harvard.i2b2.eclipse/endorsed_lib</directory>
++                  <includes>
++                    <include>*.jar</include>
++                  </includes>
++                </resource>
++              </resources>
++            </configuration>
++          </execution>
++        </executions>
++      </plugin>
++    </plugins>
++  </build>
++</project>
+diff --git a/src/edu.harvard.i2b2.eclipse.plugins.adminTool/build.properties b/src/edu.harvard.i2b2.eclipse.plugins.adminTool/build.properties
+index 4781ad3..658a720 100644
+--- a/src/edu.harvard.i2b2.eclipse.plugins.adminTool/build.properties
++++ b/src/edu.harvard.i2b2.eclipse.plugins.adminTool/build.properties
+@@ -3,17 +3,12 @@ source.. = src/,\
+ 		   gensrc/
+ bin.includes = plugin.xml,\
+                META-INF/,\
+-               i2b2-LICENSE.txt,\
+                genlib/i2b2Common-core.jar,\
+                icons/,\
+                .,\
+                help_contexts.xml,\
+                html/,\
+                toc.xml,\
+-               tocconcepts.xml,\
+-               tocintro.xml,\
+-               toctimelinecreate.xml,\
+-               toctimelineview.xml,\
+                i2b2 license 2.1-1159.txt
+ src.includes = gensrc/,\
+                src/
+diff --git a/src/edu.harvard.i2b2.eclipse.plugins.adminTool/pom.xml b/src/edu.harvard.i2b2.eclipse.plugins.adminTool/pom.xml
+new file mode 100644
+index 0000000..1a2747d
+--- /dev/null
++++ b/src/edu.harvard.i2b2.eclipse.plugins.adminTool/pom.xml
+@@ -0,0 +1,14 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
++    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
++  <modelVersion>4.0.0</modelVersion>
++  <parent>
++    <groupId>edu.harvard.i2b2.eclipse</groupId>
++    <artifactId>src</artifactId>
++    <version>0.0.1-SNAPSHOT</version>
++  </parent>
++  <groupId>edu.harvard.i2b2.eclipse</groupId>
++  <artifactId>edu.harvard.i2b2.eclipse.plugins.adminTool</artifactId>
++  <version>1.7.2</version>
++  <packaging>eclipse-plugin</packaging>
++</project>
+diff --git a/src/edu.harvard.i2b2.eclipse.plugins.analysis/build.properties b/src/edu.harvard.i2b2.eclipse.plugins.analysis/build.properties
+index 394482f..609ba0b 100644
+--- a/src/edu.harvard.i2b2.eclipse.plugins.analysis/build.properties
++++ b/src/edu.harvard.i2b2.eclipse.plugins.analysis/build.properties
+@@ -3,7 +3,6 @@ source.. = src/,\
+ 		   gensrc/
+ bin.includes = plugin.xml,\
+                META-INF/,\
+-               i2b2-LICENSE.txt,\
+                genlib/i2b2Common-core.jar,\
+                icons/,\
+                .,\
+diff --git a/src/edu.harvard.i2b2.eclipse.plugins.analysis/pom.xml b/src/edu.harvard.i2b2.eclipse.plugins.analysis/pom.xml
+new file mode 100644
+index 0000000..8e53166
+--- /dev/null
++++ b/src/edu.harvard.i2b2.eclipse.plugins.analysis/pom.xml
+@@ -0,0 +1,14 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
++    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
++  <modelVersion>4.0.0</modelVersion>
++  <parent>
++    <groupId>edu.harvard.i2b2.eclipse</groupId>
++    <artifactId>src</artifactId>
++    <version>0.0.1-SNAPSHOT</version>
++  </parent>
++  <groupId>edu.harvard.i2b2.eclipse</groupId>
++  <artifactId>edu.harvard.i2b2.eclipse.plugins.analysis</artifactId>
++  <version>1.7.2</version>
++  <packaging>eclipse-plugin</packaging>
++</project>
+diff --git a/src/edu.harvard.i2b2.eclipse.plugins.commons_apache/pom.xml b/src/edu.harvard.i2b2.eclipse.plugins.commons_apache/pom.xml
+new file mode 100644
+index 0000000..86d0b32
+--- /dev/null
++++ b/src/edu.harvard.i2b2.eclipse.plugins.commons_apache/pom.xml
+@@ -0,0 +1,14 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
++    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
++  <modelVersion>4.0.0</modelVersion>
++  <parent>
++    <groupId>edu.harvard.i2b2.eclipse</groupId>
++    <artifactId>src</artifactId>
++    <version>0.0.1-SNAPSHOT</version>
++  </parent>
++  <groupId>edu.harvard.i2b2.eclipse</groupId>
++  <artifactId>edu.harvard.i2b2.eclipse.plugins.commons_apache</artifactId>
++  <version>1.0.4</version>
++  <packaging>eclipse-plugin</packaging>
++</project>
+diff --git a/src/edu.harvard.i2b2.eclipse.plugins.explorer/build.properties b/src/edu.harvard.i2b2.eclipse.plugins.explorer/build.properties
+index 4781ad3..b16abcb 100644
+--- a/src/edu.harvard.i2b2.eclipse.plugins.explorer/build.properties
++++ b/src/edu.harvard.i2b2.eclipse.plugins.explorer/build.properties
+@@ -3,7 +3,6 @@ source.. = src/,\
+ 		   gensrc/
+ bin.includes = plugin.xml,\
+                META-INF/,\
+-               i2b2-LICENSE.txt,\
+                genlib/i2b2Common-core.jar,\
+                icons/,\
+                .,\
+diff --git a/src/edu.harvard.i2b2.eclipse.plugins.explorer/pom.xml b/src/edu.harvard.i2b2.eclipse.plugins.explorer/pom.xml
+new file mode 100644
+index 0000000..2d60108
+--- /dev/null
++++ b/src/edu.harvard.i2b2.eclipse.plugins.explorer/pom.xml
+@@ -0,0 +1,14 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
++    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
++  <modelVersion>4.0.0</modelVersion>
++  <parent>
++    <groupId>edu.harvard.i2b2.eclipse</groupId>
++    <artifactId>src</artifactId>
++    <version>0.0.1-SNAPSHOT</version>
++  </parent>
++  <groupId>edu.harvard.i2b2.eclipse</groupId>
++  <artifactId>edu.harvard.i2b2.eclipse.plugins.explorer</artifactId>
++  <version>1.7.2</version>
++  <packaging>eclipse-plugin</packaging>
++</project>
+diff --git a/src/edu.harvard.i2b2.eclipse.plugins.jdnc_support/pom.xml b/src/edu.harvard.i2b2.eclipse.plugins.jdnc_support/pom.xml
+new file mode 100644
+index 0000000..1be3f8a
+--- /dev/null
++++ b/src/edu.harvard.i2b2.eclipse.plugins.jdnc_support/pom.xml
+@@ -0,0 +1,14 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
++    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
++  <modelVersion>4.0.0</modelVersion>
++  <parent>
++    <groupId>edu.harvard.i2b2.eclipse</groupId>
++    <artifactId>src</artifactId>
++    <version>0.0.1-SNAPSHOT</version>
++  </parent>
++  <groupId>edu.harvard.i2b2.eclipse</groupId>
++  <artifactId>edu.harvard.i2b2.eclipse.plugins.jdnc_support</artifactId>
++  <version>1.0.0</version>
++  <packaging>eclipse-plugin</packaging>
++</project>
+diff --git a/src/edu.harvard.i2b2.eclipse.plugins.log/pom.xml b/src/edu.harvard.i2b2.eclipse.plugins.log/pom.xml
+new file mode 100644
+index 0000000..a9b08d5
+--- /dev/null
++++ b/src/edu.harvard.i2b2.eclipse.plugins.log/pom.xml
+@@ -0,0 +1,14 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
++    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
++  <modelVersion>4.0.0</modelVersion>
++  <parent>
++    <groupId>edu.harvard.i2b2.eclipse</groupId>
++    <artifactId>src</artifactId>
++    <version>0.0.1-SNAPSHOT</version>
++  </parent>
++  <groupId>edu.harvard.i2b2.eclipse</groupId>
++  <artifactId>edu.harvard.i2b2.eclipse.plugins.log</artifactId>
++  <version>1.2.8</version>
++  <packaging>eclipse-plugin</packaging>
++</project>
+diff --git a/src/edu.harvard.i2b2.eclipse.plugins.ontology/build.properties b/src/edu.harvard.i2b2.eclipse.plugins.ontology/build.properties
+index 88cf3ea..e85a042 100644
+--- a/src/edu.harvard.i2b2.eclipse.plugins.ontology/build.properties
++++ b/src/edu.harvard.i2b2.eclipse.plugins.ontology/build.properties
+@@ -4,7 +4,6 @@ output.. = bin/
+ bin.includes = plugin.xml,\
+                log4j.properties,\
+                META-INF/,\
+-               i2b2-LICENSE.txt,\
+                .,\
+                genlib/i2b2Common-core.jar,\
+                icons/,\
+diff --git a/src/edu.harvard.i2b2.eclipse.plugins.ontology/pom.xml b/src/edu.harvard.i2b2.eclipse.plugins.ontology/pom.xml
+new file mode 100644
+index 0000000..f5f3c4e
+--- /dev/null
++++ b/src/edu.harvard.i2b2.eclipse.plugins.ontology/pom.xml
+@@ -0,0 +1,14 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
++    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
++  <modelVersion>4.0.0</modelVersion>
++  <parent>
++    <groupId>edu.harvard.i2b2.eclipse</groupId>
++    <artifactId>src</artifactId>
++    <version>0.0.1-SNAPSHOT</version>
++  </parent>
++  <groupId>edu.harvard.i2b2.eclipse</groupId>
++  <artifactId>edu.harvard.i2b2.eclipse.plugins.ontology</artifactId>
++  <version>1.7.2</version>
++  <packaging>eclipse-plugin</packaging>
++</project>
+diff --git a/src/edu.harvard.i2b2.eclipse.plugins.patientMapping/build.properties b/src/edu.harvard.i2b2.eclipse.plugins.patientMapping/build.properties
+index 4781ad3..05c25d6 100644
+--- a/src/edu.harvard.i2b2.eclipse.plugins.patientMapping/build.properties
++++ b/src/edu.harvard.i2b2.eclipse.plugins.patientMapping/build.properties
+@@ -3,7 +3,6 @@ source.. = src/,\
+ 		   gensrc/
+ bin.includes = plugin.xml,\
+                META-INF/,\
+-               i2b2-LICENSE.txt,\
+                genlib/i2b2Common-core.jar,\
+                icons/,\
+                .,\
+@@ -11,9 +10,6 @@ bin.includes = plugin.xml,\
+                html/,\
+                toc.xml,\
+                tocconcepts.xml,\
+-               tocintro.xml,\
+-               toctimelinecreate.xml,\
+-               toctimelineview.xml,\
+                i2b2 license 2.1-1159.txt
+ src.includes = gensrc/,\
+                src/
+diff --git a/src/edu.harvard.i2b2.eclipse.plugins.patientMapping/pom.xml b/src/edu.harvard.i2b2.eclipse.plugins.patientMapping/pom.xml
+new file mode 100644
+index 0000000..34e4a69
+--- /dev/null
++++ b/src/edu.harvard.i2b2.eclipse.plugins.patientMapping/pom.xml
+@@ -0,0 +1,14 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
++    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
++  <modelVersion>4.0.0</modelVersion>
++  <parent>
++    <groupId>edu.harvard.i2b2.eclipse</groupId>
++    <artifactId>src</artifactId>
++    <version>0.0.1-SNAPSHOT</version>
++  </parent>
++  <groupId>edu.harvard.i2b2.eclipse</groupId>
++  <artifactId>edu.harvard.i2b2.eclipse.plugins.patientMapping</artifactId>
++  <version>1.7.2</version>
++  <packaging>eclipse-plugin</packaging>
++</project>
+diff --git a/src/edu.harvard.i2b2.eclipse.plugins.patientSet/build.properties b/src/edu.harvard.i2b2.eclipse.plugins.patientSet/build.properties
+index a2d79fd..06921ac 100644
+--- a/src/edu.harvard.i2b2.eclipse.plugins.patientSet/build.properties
++++ b/src/edu.harvard.i2b2.eclipse.plugins.patientSet/build.properties
+@@ -2,9 +2,7 @@ source.. = src/,\
+ 		   gensrc/
+ output.. = bin/
+ bin.includes = plugin.xml,\
+-               log4j.properties,\
+                META-INF/,\
+-               i2b2-LICENSE.txt,\
+                .,\
+                icons/,\
+                genlib/i2b2Common-core.jar,\
+diff --git a/src/edu.harvard.i2b2.eclipse.plugins.patientSet/pom.xml b/src/edu.harvard.i2b2.eclipse.plugins.patientSet/pom.xml
+new file mode 100644
+index 0000000..775a3f0
+--- /dev/null
++++ b/src/edu.harvard.i2b2.eclipse.plugins.patientSet/pom.xml
+@@ -0,0 +1,14 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
++    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
++  <modelVersion>4.0.0</modelVersion>
++  <parent>
++    <groupId>edu.harvard.i2b2.eclipse</groupId>
++    <artifactId>src</artifactId>
++    <version>0.0.1-SNAPSHOT</version>
++  </parent>
++  <groupId>edu.harvard.i2b2.eclipse</groupId>
++  <artifactId>edu.harvard.i2b2.eclipse.plugins.patientSet</artifactId>
++  <version>1.7.2</version>
++  <packaging>eclipse-plugin</packaging>
++</project>
+diff --git a/src/edu.harvard.i2b2.eclipse.plugins.previousQuery/build.properties b/src/edu.harvard.i2b2.eclipse.plugins.previousQuery/build.properties
+index a2d79fd..06921ac 100644
+--- a/src/edu.harvard.i2b2.eclipse.plugins.previousQuery/build.properties
++++ b/src/edu.harvard.i2b2.eclipse.plugins.previousQuery/build.properties
+@@ -2,9 +2,7 @@ source.. = src/,\
+ 		   gensrc/
+ output.. = bin/
+ bin.includes = plugin.xml,\
+-               log4j.properties,\
+                META-INF/,\
+-               i2b2-LICENSE.txt,\
+                .,\
+                icons/,\
+                genlib/i2b2Common-core.jar,\
+diff --git a/src/edu.harvard.i2b2.eclipse.plugins.previousQuery/pom.xml b/src/edu.harvard.i2b2.eclipse.plugins.previousQuery/pom.xml
+new file mode 100644
+index 0000000..abe8f74
+--- /dev/null
++++ b/src/edu.harvard.i2b2.eclipse.plugins.previousQuery/pom.xml
+@@ -0,0 +1,14 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
++    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
++  <modelVersion>4.0.0</modelVersion>
++  <parent>
++    <groupId>edu.harvard.i2b2.eclipse</groupId>
++    <artifactId>src</artifactId>
++    <version>0.0.1-SNAPSHOT</version>
++  </parent>
++  <groupId>edu.harvard.i2b2.eclipse</groupId>
++  <artifactId>edu.harvard.i2b2.eclipse.plugins.previousQuery</artifactId>
++  <version>1.7.2</version>
++  <packaging>eclipse-plugin</packaging>
++</project>
+diff --git a/src/edu.harvard.i2b2.eclipse.plugins.query/build.properties b/src/edu.harvard.i2b2.eclipse.plugins.query/build.properties
+index 967ea09..845673a 100644
+--- a/src/edu.harvard.i2b2.eclipse.plugins.query/build.properties
++++ b/src/edu.harvard.i2b2.eclipse.plugins.query/build.properties
+@@ -3,7 +3,6 @@ source.. = src/,\
+ 		output.. = bin/
+ bin.includes = plugin.xml,\
+                META-INF/,\
+-               i2b2-LICENSE.txt,\
+                .,\
+                icons/,\
+                genlib/i2b2Common-core.jar,\
+@@ -11,5 +10,4 @@ bin.includes = plugin.xml,\
+                html/,\
+                toc.xml,\
+                tocconcepts.xml,\
+-               tocintroduction.xml,\
+                i2b2 license 2.1-1159.txt
+diff --git a/src/edu.harvard.i2b2.eclipse.plugins.query/pom.xml b/src/edu.harvard.i2b2.eclipse.plugins.query/pom.xml
+new file mode 100644
+index 0000000..c43285b
+--- /dev/null
++++ b/src/edu.harvard.i2b2.eclipse.plugins.query/pom.xml
+@@ -0,0 +1,14 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
++    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
++  <modelVersion>4.0.0</modelVersion>
++  <parent>
++    <groupId>edu.harvard.i2b2.eclipse</groupId>
++    <artifactId>src</artifactId>
++    <version>0.0.1-SNAPSHOT</version>
++  </parent>
++  <groupId>edu.harvard.i2b2.eclipse</groupId>
++  <artifactId>edu.harvard.i2b2.eclipse.plugins.query</artifactId>
++  <version>1.7.2</version>
++  <packaging>eclipse-plugin</packaging>
++</project>
+diff --git a/src/edu.harvard.i2b2.eclipse.plugins.querytool/pom.xml b/src/edu.harvard.i2b2.eclipse.plugins.querytool/pom.xml
+new file mode 100644
+index 0000000..e48b776
+--- /dev/null
++++ b/src/edu.harvard.i2b2.eclipse.plugins.querytool/pom.xml
+@@ -0,0 +1,14 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
++    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
++  <modelVersion>4.0.0</modelVersion>
++  <parent>
++    <groupId>edu.harvard.i2b2.eclipse</groupId>
++    <artifactId>src</artifactId>
++    <version>0.0.1-SNAPSHOT</version>
++  </parent>
++  <groupId>edu.harvard.i2b2.eclipse</groupId>
++  <artifactId>edu.harvard.i2b2.eclipse.plugins.querytool</artifactId>
++  <version>1.7.2</version>
++  <packaging>eclipse-plugin</packaging>
++</project>
+diff --git a/src/edu.harvard.i2b2.eclipse.plugins.webservicesAxis2/pom.xml b/src/edu.harvard.i2b2.eclipse.plugins.webservicesAxis2/pom.xml
+new file mode 100644
+index 0000000..95cf6fb
+--- /dev/null
++++ b/src/edu.harvard.i2b2.eclipse.plugins.webservicesAxis2/pom.xml
+@@ -0,0 +1,14 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
++    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
++  <modelVersion>4.0.0</modelVersion>
++  <parent>
++    <groupId>edu.harvard.i2b2.eclipse</groupId>
++    <artifactId>src</artifactId>
++    <version>0.0.1-SNAPSHOT</version>
++  </parent>
++  <groupId>edu.harvard.i2b2.eclipse</groupId>
++  <artifactId>edu.harvard.i2b2.eclipse.plugins.webservicesAxis2</artifactId>
++  <version>1.1.0</version>
++  <packaging>eclipse-plugin</packaging>
++</project>
+diff --git a/src/edu.harvard.i2b2.eclipse.plugins.workplace/build.properties b/src/edu.harvard.i2b2.eclipse.plugins.workplace/build.properties
+index b75e7eb..42279a2 100644
+--- a/src/edu.harvard.i2b2.eclipse.plugins.workplace/build.properties
++++ b/src/edu.harvard.i2b2.eclipse.plugins.workplace/build.properties
+@@ -9,7 +9,6 @@ bin.includes = plugin.xml,\
+                tocgettingstarted.xml,\
+                toctasks.xml,\
+                META-INF/,\
+-               i2b2-LICENSE.txt,\
+                .,\
+                genlib/i2b2Common-core.jar,\
+                html/,\
+diff --git a/src/edu.harvard.i2b2.eclipse.plugins.workplace/pom.xml b/src/edu.harvard.i2b2.eclipse.plugins.workplace/pom.xml
+new file mode 100644
+index 0000000..5cec195
+--- /dev/null
++++ b/src/edu.harvard.i2b2.eclipse.plugins.workplace/pom.xml
+@@ -0,0 +1,14 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
++    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
++  <modelVersion>4.0.0</modelVersion>
++  <parent>
++    <groupId>edu.harvard.i2b2.eclipse</groupId>
++    <artifactId>src</artifactId>
++    <version>0.0.1-SNAPSHOT</version>
++  </parent>
++  <groupId>edu.harvard.i2b2.eclipse</groupId>
++  <artifactId>edu.harvard.i2b2.eclipse.plugins.workplace</artifactId>
++  <version>1.7.2</version>
++  <packaging>eclipse-plugin</packaging>
++</project>
+diff --git a/src/edu.harvard.i2b2.eclipse.plugins.xml_support_jaxb/pom.xml b/src/edu.harvard.i2b2.eclipse.plugins.xml_support_jaxb/pom.xml
+new file mode 100644
+index 0000000..c3f9fc2
+--- /dev/null
++++ b/src/edu.harvard.i2b2.eclipse.plugins.xml_support_jaxb/pom.xml
+@@ -0,0 +1,14 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
++    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
++  <modelVersion>4.0.0</modelVersion>
++  <parent>
++    <groupId>edu.harvard.i2b2.eclipse</groupId>
++    <artifactId>src</artifactId>
++    <version>0.0.1-SNAPSHOT</version>
++  </parent>
++  <groupId>edu.harvard.i2b2.eclipse</groupId>
++  <artifactId>edu.harvard.i2b2.eclipse.plugins.xml_support_jaxb</artifactId>
++  <version>2.1.2</version>
++  <packaging>eclipse-plugin</packaging>
++</project>
+diff --git a/src/edu.harvard.i2b2.eclipse.plugins.xml_support_jdom/pom.xml b/src/edu.harvard.i2b2.eclipse.plugins.xml_support_jdom/pom.xml
+new file mode 100644
+index 0000000..c6648a8
+--- /dev/null
++++ b/src/edu.harvard.i2b2.eclipse.plugins.xml_support_jdom/pom.xml
+@@ -0,0 +1,14 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
++    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
++  <modelVersion>4.0.0</modelVersion>
++  <parent>
++    <groupId>edu.harvard.i2b2.eclipse</groupId>
++    <artifactId>src</artifactId>
++    <version>0.0.1-SNAPSHOT</version>
++  </parent>
++  <groupId>edu.harvard.i2b2.eclipse</groupId>
++  <artifactId>edu.harvard.i2b2.eclipse.plugins.xml_support_jdom</artifactId>
++  <version>1.0.0</version>
++  <packaging>eclipse-plugin</packaging>
++</project>
+diff --git a/src/edu.harvard.i2b2.eclipse/i2b2Eclipse.product b/src/edu.harvard.i2b2.eclipse/i2b2Eclipse.product
+index 6a398c0..5b2a289 100644
+--- a/src/edu.harvard.i2b2.eclipse/i2b2Eclipse.product
++++ b/src/edu.harvard.i2b2.eclipse/i2b2Eclipse.product
+@@ -1,7 +1,7 @@
+ <?xml version="1.0" encoding="UTF-8"?>
+ <?pde version="3.5"?>
+ 
+-<product name="i2b2 Workbench" id="edu.harvard.i2b2.eclipse.product" application="edu.harvard.i2b2.eclipse.application" useFeatures="true" includeLaunchers="true">
++<product name="i2b2 Workbench" id="edu.harvard.i2b2.eclipse.product" uid="edu.harvard.i2b2.eclipse.product" application="edu.harvard.i2b2.eclipse.application" useFeatures="true" includeLaunchers="true">
+ 
+    <aboutInfo>
+       <image path="/edu.harvard.i2b2.eclipse/icons/i2b2_hive_64.gif"/>
+@@ -21,13 +21,6 @@ University of Maryland (HCIL) http://www.cs.umd.edu/hcil/
+       </text>
+    </aboutInfo>
+ 
+-   <configIni use="default">
+-      <linux>/edu.harvard.i2b2.eclipse/configuration/config.ini</linux>
+-      <macosx>/edu.harvard.i2b2.eclipse/configuration/config.ini</macosx>
+-      <solaris>/edu.harvard.i2b2.eclipse/configuration/config.ini</solaris>
+-      <win32>/edu.harvard.i2b2.eclipse/configuration/config.ini</win32>
+-   </configIni>
+-
+    <launcherArgs>
+       <vmArgs>-Dorg.osgi.framework.bootdelegation=*
+ -Djava.endorsed.dirs=endorsed_lib
+@@ -191,5 +184,10 @@
+       <feature id="edu.harvard.i2b2.eclipse.features.core" version="1.7.02"/>
+    </features>
+ 
++   <configurations>
++     <plugin id="org.eclipse.core.runtime" autoStart="true" startLevel="4" />
++     <plugin id="org.eclipse.equinox.common" autoStart="true" startLevel="2" />
++     <plugin id="org.eclipse.osgi" autoStart="true" startLevel="-1" />
++   </configurations>
+ 
+ </product>
+diff --git a/src/edu.harvard.i2b2.eclipse/pom.xml b/src/edu.harvard.i2b2.eclipse/pom.xml
+new file mode 100644
+index 0000000..feb4fae
+--- /dev/null
++++ b/src/edu.harvard.i2b2.eclipse/pom.xml
+@@ -0,0 +1,14 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
++    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
++  <modelVersion>4.0.0</modelVersion>
++  <parent>
++    <groupId>edu.harvard.i2b2.eclipse</groupId>
++    <artifactId>src</artifactId>
++    <version>0.0.1-SNAPSHOT</version>
++  </parent>
++  <groupId>edu.harvard.i2b2.eclipse</groupId>
++  <artifactId>edu.harvard.i2b2.eclipse</artifactId>
++  <version>1.7.2</version>
++  <packaging>eclipse-plugin</packaging>
++</project>
+diff --git a/src/edu.harvard.i2b2.eclipse/product/i2b2Eclipse.product b/src/edu.harvard.i2b2.eclipse/product/i2b2Eclipse.product
+new file mode 120000
+index 0000000..5999c77
+--- /dev/null
++++ b/src/edu.harvard.i2b2.eclipse/product/i2b2Eclipse.product
+@@ -0,0 +1 @@
++../i2b2Eclipse.product
+\ No newline at end of file
+diff --git a/src/edu.harvard.i2b2.eclipse/product/pom.xml b/src/edu.harvard.i2b2.eclipse/product/pom.xml
+new file mode 100644
+index 0000000..67c9aa5
+--- /dev/null
++++ b/src/edu.harvard.i2b2.eclipse/product/pom.xml
+@@ -0,0 +1,55 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
++    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
++  <modelVersion>4.0.0</modelVersion>
++  <groupId>edu.harvard.i2b2.eclipse</groupId>
++  <artifactId>eclipse-repository</artifactId>
++  <version>1.7.2</version>
++  <packaging>eclipse-repository</packaging>
++  <name>i2b2 Workbench RCP</name>
++
++  <parent>
++    <groupId>edu.harvard.i2b2.eclipse</groupId>
++    <artifactId>src</artifactId>
++    <version>0.0.1-SNAPSHOT</version>
++    <relativePath>../..</relativePath>
++  </parent>
++
++  <build>
++    <plugins>
++       <plugin>
++           <groupId>org.eclipse.tycho</groupId>
++           <artifactId>tycho-p2-director-plugin</artifactId>
++           <version>${tycho.version}</version>
++           <executions>
++               <execution>
++                   <id>materialize-products</id>
++                   <goals>
++                       <goal>materialize-products</goal>
++                   </goals>
++               </execution>
++               <!--
++               <execution>
++                   <id>archive-products</id>
++                   <goals>
++                       <goal>archive-products</goal>
++                   </goals>
++               </execution>
++               -->
++           </executions>
++           <configuration>
++               <formats>
++                   <linux>tar.gz</linux>
++               </formats>
++               <products>
++                   <product>
++                       <id>edu.harvard.i2b2.eclipse.product</id>
++                       <rootFolder>i2b2workbench</rootFolder>
++                   </product>
++               </products>
++               <installFeatures>true</installFeatures>
++           </configuration>
++       </plugin>
++    </plugins>
++  </build>
++</project>
+diff --git a/src/pom.xml b/src/pom.xml
+new file mode 100644
+index 0000000..1671870
+--- /dev/null
++++ b/src/pom.xml
+@@ -0,0 +1,135 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
++  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
++  <modelVersion>4.0.0</modelVersion>
++  <groupId>edu.harvard.i2b2.eclipse</groupId>
++  <artifactId>src</artifactId>
++  <version>0.0.1-SNAPSHOT</version>
++  <packaging>pom</packaging>
++  <modules>
++    <module>edu.harvard.i2b2.eclipse</module>
++    <module>edu.harvard.i2b2.eclipse.features.core</module>
++    <module>edu.harvard.i2b2.eclipse.plugins.adminTool</module>
++    <module>edu.harvard.i2b2.eclipse.plugins.analysis</module>
++    <module>edu.harvard.i2b2.eclipse.plugins.commons_apache</module>
++    <module>edu.harvard.i2b2.eclipse.plugins.explorer</module>
++    <module>edu.harvard.i2b2.eclipse.plugins.jdnc_support</module>
++    <module>edu.harvard.i2b2.eclipse.plugins.log</module>
++    <module>edu.harvard.i2b2.eclipse.plugins.ontology</module>
++    <module>edu.harvard.i2b2.eclipse.plugins.patientMapping</module>
++    <module>edu.harvard.i2b2.eclipse.plugins.patientSet</module>
++    <module>edu.harvard.i2b2.eclipse.plugins.previousQuery</module>
++    <module>edu.harvard.i2b2.eclipse.plugins.query</module>
++    <module>edu.harvard.i2b2.eclipse.plugins.querytool</module>
++    <module>edu.harvard.i2b2.eclipse.plugins.webservicesAxis2</module>
++    <module>edu.harvard.i2b2.eclipse.plugins.workplace</module>
++    <module>edu.harvard.i2b2.eclipse.plugins.xml_support_jaxb</module>
++    <module>edu.harvard.i2b2.eclipse.plugins.xml_support_jdom</module>
++    <module>edu.harvard.i2b2.eclipse/product</module>
++  </modules>
++  <build>
++    <plugins>
++      <plugin>
++        <groupId>org.eclipse.tycho</groupId>
++        <artifactId>tycho-maven-plugin</artifactId>
++        <version>${tycho.version}</version>
++        <extensions>true</extensions>
++      </plugin>
++      <plugin>
++        <groupId>org.eclipse.tycho</groupId>
++        <artifactId>target-platform-configuration</artifactId>
++        <version>${tycho.version}</version>
++        <configuration>
++          <environments>
++            <environment>
++              <os>linux</os>
++              <ws>gtk</ws>
++              <arch>x86_64</arch>
++            </environment>
++          </environments>
++
++        </configuration>
++      </plugin>
++      <plugin>
++        <groupId>org.eclipse.tycho</groupId>
++        <artifactId>tycho-compiler-plugin</artifactId>
++        <version>${tycho.version}</version>
++        <configuration>
++          <compilerArgument>-err:-forbidden</compilerArgument>
++        </configuration>
++      </plugin>
++      <plugin>
++        <groupId>org.apache.maven.plugins</groupId>
++        <artifactId>maven-compiler-plugin</artifactId>
++        <version>3.1</version>
++        <configuration>
++          <source>1.5</source>
++          <target>1.5</target>
++        </configuration>
++      </plugin>
++      <plugin>
++        <artifactId>maven-antrun-plugin</artifactId>
++        <version>1.7</version>
++        <inherited>false</inherited>
++        <executions>
++          <execution>
++            <id>buildAssist-gen-sources</id>
++            <phase>generate-sources</phase>
++            <configuration>
++              <tasks>
++                <ant antfile="build.xml" dir="./BuildAssist"/>
++              </tasks>
++            </configuration>
++            <goals>
++              <goal>run</goal>
++            </goals>
++          </execution>
++        </executions>
++      </plugin>
++    </plugins>
++  </build>
++
++  <properties>
++    <eclipse-site>http://download.eclipse.org/releases/helios</eclipse-site>
++    <platform-version>[3.6,3.7)</platform-version>
++    <swtbot-site>http://download.eclipse.org/technology/swtbot/helios/dev-build/update-site</swtbot-site>
++    <tycho.version>0.21.0</tycho.version>
++    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
++  </properties>
++
++  <repositories>
++    <repository>
++      <id>eclipse-site</id>
++      <layout>p2</layout>
++      <url>${eclipse-site}</url>
++    </repository>
++  </repositories>
++
++  <profiles>
++    <profile>
++      <!-- this needs a variation on Mac OS X: http://stackoverflow.com/questions/3080437 -->
++      <id>tools.jar</id>
++      <activation>
++        <activeByDefault>true</activeByDefault>
++      </activation>
++      <build>
++        <plugins>
++          <plugin>
++            <groupId>org.apache.maven.plugins</groupId>
++            <artifactId>maven-antrun-plugin</artifactId>
++            <dependencies>
++              <dependency>
++                <groupId>com.sun</groupId>
++                <artifactId>tools</artifactId>
++                <version>1.6.0</version>
++                <scope>system</scope>
++                <systemPath>${java.home}/../lib/tools.jar</systemPath>
++              </dependency>
++            </dependencies>
++          </plugin>
++        </plugins>
++      </build>
++    </profile>
++  </profiles>
++
++</project>

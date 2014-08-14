@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=I2B2 Workbench
+Comment=A collection of client-side components that communicate with i2b2 Cells and help aggregate their functionality in the Hive
+Exec=i2b2workbench
+Icon=i2b2Workbench
+Terminal=false
+Type=Application
+Categories=Office;Development;
+StartupNotify=true
