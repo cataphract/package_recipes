@@ -1,0 +1,12 @@
+pkgname=$(basename $(pwd))
+pkgver="$(find . -maxdepth 1 -name "${pkgname}_*.deb" | cut -d _ -f2 | cut -d - -f 1)"
+pkgrel="$(find . -maxdepth 1 -name "${pkgname}_*.deb" | cut -d _ -f2 | cut -d - -f 2)"
+arch=(x86_64)
+depends=(gtk2 java-environment)
+source=($(find . -maxdepth 1 -name "${pkgname}_*.deb"))
+md5sums=('SKIP')
+
+package() {
+	cd "$srcdir"
+	bsdtar -xf data.tar.gz -C "$pkgdir"
+}
