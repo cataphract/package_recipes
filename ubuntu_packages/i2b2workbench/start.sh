@@ -3,6 +3,7 @@
 DIR=/opt/i2b2workbench
 export ECLIPSE_HOME="$DIR"
 export GDK_NATIVE_WINDOWS=true
+export LIBOVERLAY_SCROLLBAR=0
 
 mkdir -p "$HOME/.i2b2workbench"
 if [[ ! -f "$HOME/.i2b2workbench/i2b2workbench.properties" ]]; then

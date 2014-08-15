@@ -1,6 +1,6 @@
 NAME         := i2b2workbench
 VERSION      := 1.7.2
-ITERATION    := 1
+ITERATION    := 2
 SOURCE_URL   := http://files.thehyve.net/i2b2Workbench-src-1702.zip
 FETCHED_FILE := $(NAME)-$(VERSION).tar.gz
 DEPENDS      := java-runtime
