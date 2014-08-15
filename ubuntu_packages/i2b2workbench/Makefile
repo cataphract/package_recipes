@@ -1,6 +1,6 @@
 NAME         := i2b2workbench
 VERSION      := 1.7.2
-ITERATION    := 2
+ITERATION    := 4
 SOURCE_URL   := http://files.thehyve.net/i2b2Workbench-src-1702.zip
 FETCHED_FILE := $(NAME)-$(VERSION).tar.gz
 DEPENDS      := java-runtime
@@ -22,9 +22,10 @@ FINAL_PKG_DIR := $(SDESTDIR)/opt/i2b2workbench
 build:
 	[ -f $(SBUILDDIR)/pom.xml ] || \
 		patch -d $(SBUILDDIR) -p2 < i2b2Workbench-src-1702.patch
-	cd $(SBUILDDIR) && mvn clean install
+	cd $(SBUILDDIR) && mvn install
 
 package:
+	rm -rf $(SDESTDIR)/opt $(SDESTDIR)/usr
 	mkdir -p $(SDESTDIR)/opt
 	cp -a $(SBUILDDIR)/edu.harvard.i2b2.eclipse/product/target/products/edu.harvard.i2b2.eclipse.product/linux/gtk/x86_64/i2b2workbench/ \
 		$(SDESTDIR)/opt

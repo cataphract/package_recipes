@@ -622,14 +622,29 @@ index 6a398c0..5b2a289 100644
     <launcherArgs>
        <vmArgs>-Dorg.osgi.framework.bootdelegation=*
  -Djava.endorsed.dirs=endorsed_lib
-@@ -191,5 +184,10 @@
+@@ -189,7 +182,25 @@
+ 
+    <features>
        <feature id="edu.harvard.i2b2.eclipse.features.core" version="1.7.02"/>
++      <!-- Install extra plugins -->
++      <feature id="edu.harvard.i2b2.eclipse.features.annotator"/>
++      <feature id="edu.harvard.i2b2.eclipse.features.exportData"/>
++      <feature id="edu.harvard.i2b2.eclipse.features.hpc"/>
++      <feature id="edu.harvard.i2b2.eclipse.features.importData"/>
++      <feature id="edu.harvard.i2b2.eclipse.features.pft"/>
++      <feature id="edu.harvard.i2b2.eclipse.features.tableViewer"/>
++      <feature id="edu.harvard.i2b2.eclipse.features.textanalyzer"/>
     </features>
  
 +   <configurations>
-+     <plugin id="org.eclipse.core.runtime" autoStart="true" startLevel="4" />
-+     <plugin id="org.eclipse.equinox.common" autoStart="true" startLevel="2" />
-+     <plugin id="org.eclipse.osgi" autoStart="true" startLevel="-1" />
++      <plugin id="org.eclipse.core.runtime" autoStart="true" startLevel="4" />
++      <plugin id="org.eclipse.equinox.common" autoStart="true" startLevel="2" />
++      <plugin id="org.eclipse.osgi" autoStart="true" startLevel="-1" />
++      <property name="i2b2.homebase" value="https://www.i2b2.org/updateSite"/>
++      <!-- maybe this should use ~/.config instead -->
++      <property name="osgi.instance.area" value="@user.home/.i2b2workbench/instance" />
++      <property name="osgi.configuration.area" value="@user.home/.i2b2workbench/configuration" />
++      <property name="osgi.user.area" value="@user.home/.i2b2workbench/user" />
 +   </configurations>
  
  </product>
@@ -666,7 +681,7 @@ new file mode 100644
 index 0000000..67c9aa5
 --- /dev/null
 +++ b/src/edu.harvard.i2b2.eclipse/product/pom.xml
-@@ -0,0 +1,55 @@
+@@ -0,0 +1,47 @@
 +<?xml version="1.0" encoding="UTF-8"?>
 +<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
 +    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
@@ -697,14 +712,6 @@ index 0000000..67c9aa5
 +                       <goal>materialize-products</goal>
 +                   </goals>
 +               </execution>
-+               <!--
-+               <execution>
-+                   <id>archive-products</id>
-+                   <goals>
-+                       <goal>archive-products</goal>
-+                   </goals>
-+               </execution>
-+               -->
 +           </executions>
 +           <configuration>
 +               <formats>
@@ -727,7 +734,7 @@ new file mode 100644
 index 0000000..1671870
 --- /dev/null
 +++ b/src/pom.xml
-@@ -0,0 +1,135 @@
+@@ -0,0 +1,140 @@
 +<?xml version="1.0" encoding="UTF-8"?>
 +<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
 +  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
@@ -821,8 +828,8 @@ index 0000000..1671870
 +
 +  <properties>
 +    <eclipse-site>http://download.eclipse.org/releases/helios</eclipse-site>
++    <i2b2-site>https://www.i2b2.org/updateSite</i2b2-site>
 +    <platform-version>[3.6,3.7)</platform-version>
-+    <swtbot-site>http://download.eclipse.org/technology/swtbot/helios/dev-build/update-site</swtbot-site>
 +    <tycho.version>0.21.0</tycho.version>
 +    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 +  </properties>
@@ -832,6 +839,11 @@ index 0000000..1671870
 +      <id>eclipse-site</id>
 +      <layout>p2</layout>
 +      <url>${eclipse-site}</url>
++    </repository>
++    <repository>
++      <id>i2b2-site</id>
++      <layout>p2</layout>
++      <url>${i2b2-site}</url>
 +    </repository>
 +  </repositories>
 +
