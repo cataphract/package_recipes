@@ -10,7 +10,6 @@ if $::operatingsystem == 'Ubuntu' {
         'git', # centos mach
     ]
     $gem_req = Package['ruby-dev']
-    Package['git'] -> Vcsrepo <| |>
 } else {
     $native_packages = [
         'cairo-devel',
@@ -20,6 +19,10 @@ if $::operatingsystem == 'Ubuntu' {
         'rubygems',
         'ruby-devel',
         'php',
+        'git',
+        'gcc-g++',
+        'gcc-gfortan',
+        'rpm-build',
     ]
     $gem_req = [
         Package['rubygems'],
@@ -45,3 +48,5 @@ vcsrepo { '/opt/transmart-data':
     revision => 'master',
     user     => 'vagrant',
 }
+
+Package['git'] -> Vcsrepo <| |>

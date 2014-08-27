@@ -1,18 +1,22 @@
 # vi: set ft=ruby ts=2 sw=2 si et:
 
-VAGRANTFILE_API_VERSION = "2"
+VAGRANTFILE_API_VERSION = '2'
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
-  config.vm.box = ENV['UBUNTU'] ? "ubuntu/trusty64" : "centos6.4"
-  unless ENV['UBUNTU']
+  if ENV['UBUNTU']
+    config.vm.box = 'ubuntu/trusty64'
+  elsif ENV['CENTOS7']
+    config.vm.box = 'developervms/centos7-64'
+  else
+    config.vm.box = 'centos6.4'
     config.vm.box_url = 'https://github.com/2creatives/vagrant-centos/releases/download/v6.4.2/centos64-x86_64-20140116.box'
   end
 
-  config.vm.provider "virtualbox" do |v|
+  config.vm.provider 'virtualbox' do |v|
     v.cpus = 4
     v.memory = 3000
   end
 
-  config.vm.provision :shell, :path => "shell/bootstrap.sh"
-  config.vm.provision "puppet"
+  config.vm.provision :shell, :path => 'shell/bootstrap.sh'
+  config.vm.provision 'puppet'
 end
