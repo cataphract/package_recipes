@@ -8,6 +8,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.box = "ubuntu/trusty64"
 
   provision_script = <<-eos
+    apt-key adv --keyserver keyserver.ubuntu.com --recv 3375DA21
+    echo deb http://apt.thehyve.net/internal/ trusty main > /etc/apt/sources.list.d/internal.list
+    apt-get update
     apt-get install -y ruby-dev bsdtar
     gem install fpm
   eos
