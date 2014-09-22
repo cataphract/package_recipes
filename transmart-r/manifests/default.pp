@@ -20,7 +20,7 @@ if $::operatingsystem == 'Ubuntu' {
         'ruby-devel',
         'php',
         'git',
-        'gcc-g++',
+        $::operatingsystemmajrelease ? { 6 => 'gcc-g++', default => 'gcc-c++' },
         'gcc-gfortan',
         'rpm-build',
     ]
@@ -44,7 +44,7 @@ file { '/opt':
 vcsrepo { '/opt/transmart-data':
     ensure   => latest,
     provider => git,
-    source   => 'git://github.com/thehyve/transmart-data.git',
+    source   => 'git://github.com/transmart/transmart-data.git',
     revision => 'master',
     user     => 'vagrant',
 }

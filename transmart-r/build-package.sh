@@ -4,13 +4,14 @@ set -e
 set -x
 
 VERSION="3.0.3.$(date +%Y%m%d)"
-ITERATION=3
+ITERATION=4
 
 cd /opt/transmart-data/R
 export R_PREFIX=/opt/R
 export R_FLAGS="-O2"
 export RSERVE_CONF=/etc/Rserve.conf
 export TRANSMART_USER=transmart
+export TABLESPACES=/bogus
 
 if [[ -x /usr/bin/systemctl ]]; then
   USE_SYSTEMD=1
