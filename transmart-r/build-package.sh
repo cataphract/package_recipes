@@ -4,7 +4,7 @@ set -e
 set -x
 
 VERSION="3.0.3.$(date +%Y%m%d)"
-ITERATION=4
+ITERATION=5
 
 cd /opt/transmart-data/R
 export R_PREFIX=/opt/R
@@ -42,11 +42,14 @@ fi
 
 if [[ $(facter operatingsystem) = 'Ubuntu' ]]; then
   PACKAGE_TYPE=deb
-  DEPS=('libcairo2' 'xfonts-base' 'libgfortran3' 'libgomp1' 'libreadline6')
+  DEPS=('libcairo2' 'xfonts-base' 'libgfortran3' 'libgomp1' 'libreadline6'
+        'fonts-dejavu-core' 'fonts-texgyre' 'texlive-fonts-recommended'
+        'gsfonts-x11' 'libpango-1.0-0')
 else
   PACKAGE_TYPE=rpm
   DEPS=('cairo' 'xorg-x11-fonts-misc' 'xorg-x11-fonts-Type1'
         'libgfortran' 'readline' 'libgomp')
+        # needs to be updated for more fonts!
 fi
 
 DEP_ARGS=()

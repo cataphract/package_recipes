@@ -2,6 +2,9 @@ if $::operatingsystem == 'Ubuntu' {
     $native_packages = [
         'libcairo2-dev',
         'libxt-dev',
+        'libpango1.0-dev',
+        'texlive-fonts-recommended',
+        'tex-gyre', # textlive-fonts-recommended recommends this package
         'libreadline-dev',
         'ruby-dev',
         'php5-cli',
@@ -15,6 +18,8 @@ if $::operatingsystem == 'Ubuntu' {
         'cairo-devel',
         'libX11-devel',
         'libXt-devel',
+        # pango?
+        # texlive fonts?
         'readline-devel',
         'rubygems',
         'ruby-devel',
