@@ -18,15 +18,16 @@ if $::operatingsystem == 'Ubuntu' {
         'cairo-devel',
         'libX11-devel',
         'libXt-devel',
-        # pango?
-        # texlive fonts?
+        'pango-devel',
+        'texlive-texmf-fonts',
+        'urw-fonts',
         'readline-devel',
         'rubygems',
         'ruby-devel',
         'php',
         'git',
         $::operatingsystemmajrelease ? { 6 => 'gcc-g++', default => 'gcc-c++' },
-        'gcc-gfortan',
+        'gcc-gfortran',
         'rpm-build',
     ]
     $gem_req = [

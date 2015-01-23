@@ -3,8 +3,8 @@
 set -e
 set -x
 
-VERSION="3.0.3.$(date +%Y%m%d)"
-ITERATION=5
+VERSION="3.1.2.$(date +%Y%m%d)"
+ITERATION=6
 
 cd /opt/transmart-data/R
 export R_PREFIX=/opt/R
@@ -45,11 +45,15 @@ if [[ $(facter operatingsystem) = 'Ubuntu' ]]; then
   DEPS=('libcairo2' 'xfonts-base' 'libgfortran3' 'libgomp1' 'libreadline6'
         'fonts-dejavu-core' 'fonts-texgyre' 'texlive-fonts-recommended'
         'gsfonts-x11' 'libpango-1.0-0')
+  EXTRA=()
 else
   PACKAGE_TYPE=rpm
   DEPS=('cairo' 'xorg-x11-fonts-misc' 'xorg-x11-fonts-Type1'
-        'libgfortran' 'readline' 'libgomp')
-        # needs to be updated for more fonts!
+        'libgfortran' 'readline' 'libgomp' 'dejavu-sans-fonts'
+        'dejavu-sans-mono-fonts' 'dejavu-serif-fonts' 'texlive-texmf-fonts'
+        'urw-fonts' 'pango')
+  EXTRA=('/etc/fonts/conf.d/10-transmart-tex.conf')
+  sudo cp /vagrant/10-transmart-tex.conf "${EXTRA[0]}"
 fi
 
 DEP_ARGS=()
@@ -72,6 +76,7 @@ fpm \
   /opt/R \
   $USER_CONFIG_FILE \
   $SERVICE_FILE \
-  $RSERVE_CONF
+  $RSERVE_CONF \
+  "${EXTRA[@]}"
 
 # vim: set et ts=2 sw=2 ai:
