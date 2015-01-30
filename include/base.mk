@@ -56,19 +56,19 @@ FPM_ARGS += --url $(PACKAGE_URL)
 endif
 
 ifdef POSTINSTALL
-FPM_ARGS += --after-install $(POSTINSTALL)
+FPM_ARGS += --after-install $(realpath $(POSTINSTALL))
 endif
 
 ifdef POSTUNINSTALL
-FPM_ARGS += --after-remove $(POSTUNINSTALL)
+FPM_ARGS += --after-remove $(realpath $(POSTUNINSTALL))
 endif
 
 ifdef PREINSTALL
-FPM_ARGS += --before-install $(PREINSTALL)
+FPM_ARGS += --before-install $(realpath $(PREINSTALL))
 endif
 
 ifdef PREUNINSTALL
-FPM_ARGS += --before-remove $(PREUNINSTALL)
+FPM_ARGS += --before-remove $(realpath $(PREUNINSTALL))
 endif
 
 TARGET_FORMAT ?= deb
