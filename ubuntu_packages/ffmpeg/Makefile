@@ -1,6 +1,6 @@
 NAME         := ffmpeg
-VERSION      := 2.2.4
-ITERATION    := 2
+VERSION      := 2.6.1
+ITERATION    := 1
 SOURCE_URL   := http://ffmpeg.org/releases/$(NAME)-$(VERSION).tar.bz2
 FETCHED_FILE := $(NAME)-$(VERSION).tar.gz
 DEPENDS      := "libass4" "libfreetype6" "libgpac2" "libsdl1.2debian" \
@@ -11,7 +11,7 @@ BUILDDEPENDS := autoconf automake build-essential libass-dev libfreetype6-dev \
                 libgpac-dev libsdl1.2-dev libtheora-dev libtool libva-dev \
                 libvdpau-dev libvorbis-dev libx11-dev libxext-dev libxfixes-dev \
                 pkg-config texi2html zlib1g-dev yasm libmp3lame-dev libopus-dev \
-                libpulse-dev libxvidcore-dev libssl-dev clang
+                libpulse-dev libxvidcore-dev libssl-dev
 
 PACKAGE_URL := http://ffmpeg.org
 PACKAGE_DESCRIPTION := FFmpeg is a complete, cross-platform solution to \
@@ -84,10 +84,9 @@ $(LIBVPX_BUILDDIR): $(LIBVPX_FILE) $(BUILDDIR)/.keep
 	tar -C '$@' --strip-components=1 -xf '$<'
 
 build_libvpx: $(LIBVPX_LIB)
-# g++ segfaults here. Use clang instead
 $(LIBVPX_LIB):
 	$(MAKE) $(LIBVPX_BUILDDIR)
-	cd $(LIBVPX_BUILDDIR) && CXX=clang++ CC=clang \
+	cd $(LIBVPX_BUILDDIR) && \
 		./configure --prefix="$(DEPS_INSTALL_DIR)" --enable-static --disable-shared --disable-examples
 	$(MAKE) -C '$(LIBVPX_BUILDDIR)' -j8 install
 
@@ -102,16 +101,10 @@ extract: standard_extract
 
 build_x264 build_fdk_aac build_libvpx: extract install_builddepends
 
-# use clang because gcc crashes
-# it still crashes for me in the linking phase
-# just go to /tmp/build/ffmpeg-XXX and run make and then continue
-# or try removing -j8 below
 build: build_x264 build_fdk_aac build_libvpx
 	cd $(SBUILDDIR) && \
 		PKG_CONFIG_PATH='$(DEPS_INSTALL_DIR)/lib/pkgconfig' ./configure \
 		--prefix=/usr \
-		--cc=clang \
-		--cxx=clang++ \
 		--extra-cflags="-I$(DEPS_INSTALL_DIR)/include" \
 		--extra-ldflags="-L$(DEPS_INSTALL_DIR)/lib" \
 		--extra-libs="-ldl" \
