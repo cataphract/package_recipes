@@ -71,7 +71,13 @@ ifdef PREUNINSTALL
 FPM_ARGS += --before-remove $(realpath $(PREUNINSTALL))
 endif
 
-TARGET_FORMAT ?= deb
+ifndef TARGET_FORMAT
+ifneq ("$(wildcard /etc/redhat-release)","")
+TARGET_FORMAT := rpm
+else
+TARGET_FORMAT := deb
+endif
+endif
 
 FPM_SOURCE ?= dir
 
