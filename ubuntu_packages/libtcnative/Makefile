@@ -10,7 +10,7 @@ PACKAGE_DESCRIPTION := The Apache Tomcat Native Library is an optional \
 	component for use with Apache Tomcat that allows Tomcat to use certain \
 	native resources for performance, compatibility, etc.
 
-include ../include/base.mk
+include /vagrant/include/base.mk
 
 fetch: standard_fetch
 
