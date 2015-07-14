@@ -1,0 +1,89 @@
+#!/bin/sh 
+#jinstall - Command line script to easily add new java directories to
+#'alternatives'. This sets the java as default, and you can switch your
+#default java with update-java-alternatives
+#
+#Copyright 2014 Bruce.Ingalls at gmail & Alin Andrei <webupd8@gmail.com>
+#GPL v3 Affero license at http://www.gnu.org/
+#Downloads & discussion at http://www.webupd8.org/
+#Tested on Ubuntu Oneiric; should require few changes for other modern Unix systems
+#Currently tested only with JDK, not JRE.
+# Not fully internationalized, including japanese man pages
+
+set -e
+
+J_INSTALL_DIR=/usr/lib/jvm/java-8-oracle
+
+. /usr/share/debconf/confmodule
+
+#Increment highest version by 1.
+#Also assumes all Java helper programs (javaws, jcontrol, etc) at same version as java.
+#These helpers should be slaves, or in the same path as java; thus, a reasonable assumption.
+
+PRIORITY=1081
+
+#create .java-8-oracle.jinfo file header:
+if [ -e /usr/lib/jvm/.java-8-oracle.jinfo ]; then
+  rm -f /usr/lib/jvm/.java-8-oracle.jinfo
+fi
+echo "name=java-8-oracle
+alias=java-8-oracle
+priority=$PRIORITY
+section=non-free
+" > /usr/lib/jvm/.java-8-oracle.jinfo
+
+
+#link JRE files
+for f in $J_INSTALL_DIR/jre/bin/*; do
+  name=`basename $f`;
+  if [ ! -f "/usr/bin/$name" -o -L "/usr/bin/$name" ]; then  #some files, like jvisualvm might not be links
+    if [ -f "$J_INSTALL_DIR/man/man1/$name.1.gz" ]; then
+      update-alternatives --install /usr/bin/$name $name $J_INSTALL_DIR/jre/bin/$name $PRIORITY --slave /usr/share/man/man1/$name.1.gz $name.1.gz $J_INSTALL_DIR/man/man1/$name.1.gz
+      echo "jre $name $J_INSTALL_DIR/jre/bin/$name" >> /usr/lib/jvm/.java-8-oracle.jinfo
+    else #no man pages available
+      # [ ! $name = "javaws.real" ] = skip javaws.real
+      [ ! $name = "javaws.real" ] && update-alternatives --install /usr/bin/$name $name $J_INSTALL_DIR/jre/bin/$name $PRIORITY
+      [ ! $name = "javaws.real" ] && echo "jre $name $J_INSTALL_DIR/jre/bin/$name" >> /usr/lib/jvm/.java-8-oracle.jinfo
+    fi
+  fi
+done
+
+
+#link JRE not in jre/bin
+[ -f $J_INSTALL_DIR/jre/lib/jexec ]    && update-alternatives --install /usr/bin/jexec    jexec    $J_INSTALL_DIR/jre/lib/jexec    $PRIORITY --slave /usr/share/binfmts/jar jexec-binfmt $J_INSTALL_DIR/jre/lib/jar.binfmt && echo "jre jexec $J_INSTALL_DIR/jre/lib/jexec" >> /usr/lib/jvm/.java-8-oracle.jinfo
+
+#This will issue ignorable warnings for alternatives that are not part of a group
+#Link JDK files with/without man pages
+if [ -d "$J_INSTALL_DIR/man/man1" ];then
+  for f in $J_INSTALL_DIR/man/man1/*; do
+    name=`basename $f .1.gz`;
+    #some files, like jvisualvm might not be links. Further assume this for corresponding man page
+    if [ ! -f "/usr/bin/$name" -o -L "/usr/bin/$name" ]; then
+      if [ ! -f "$J_INSTALL_DIR/man/man1/$name.1.gz" ]; then
+        name=`basename $f .1`;          #handle any legacy uncompressed pages
+      fi
+      if [ ! -e $J_INSTALL_DIR/jre/bin/$name ]; then #don't link already linked JRE files
+        update-alternatives --install /usr/bin/$name $name $J_INSTALL_DIR/bin/$name $PRIORITY --slave /usr/share/man/man1/$name.1.gz $name.1.gz $J_INSTALL_DIR/man/man1/$name.1.gz
+        echo "jdk $name $J_INSTALL_DIR/bin/$name" >> /usr/lib/jvm/.java-8-oracle.jinfo
+      fi
+    fi
+  done
+else  #no man pages available
+  for f in $J_INSTALL_DIR/bin/*; do
+    name=`basename $f`;
+    if [ ! -f "/usr/bin/$name" -o -L "/usr/bin/$name" ]; then  #some files, like jvisualvm might not be links
+      if [ ! -e $J_INSTALL_DIR/jre/bin/$name ]; then #don't link already linked JRE files
+        update-alternatives --install /usr/bin/$name $name $J_INSTALL_DIR/bin/$name $PRIORITY
+        echo "jdk $name $J_INSTALL_DIR/bin/$name" >> /usr/lib/jvm/.java-8-oracle.jinfo
+      fi
+    fi
+  done
+fi
+
+# register binfmt; ignore errors, the alternative may already be
+# registered by another JRE.
+if which update-binfmts >/dev/null && [ -r /usr/share/binfmts/jar ]; then
+    update-binfmts --package oracle-java8-jdk --import jar || true
+fi
+
+# vim: ts=2 sw=2

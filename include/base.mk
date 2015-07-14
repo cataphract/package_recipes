@@ -20,6 +20,8 @@ DQUOTE = "
 # Makes '-d "$1"' if $1 is a non-empty string
 add_d = $(if $(strip $1),-d "$(strip $1)")
 add_conflicts = $(if $(strip $1),--conflicts "$(strip $1)")
+add_replaces = $(if $(strip $1),--replaces "$(strip $1)")
+add_provides = $(if $(strip $1),--provides "$(strip $1)")
 
 # Replace spaces with +, explode on ", then call add_d after turning + back into spaces
 # This is to support: DEPENDS = "package (>= 1.0)" other_pack "some_other_packge"
@@ -32,6 +34,8 @@ endif
 
 FPM_ARGS += $(call quoted_map,add_d,$(DEPENDS))
 FPM_ARGS += $(call quoted_map,add_conflicts,$(CONFLICTS))
+FPM_ARGS += $(call quoted_map,add_replaces,$(REPLACES))
+FPM_ARGS += $(call quoted_map,add_provides,$(PROVIDES))
 
 FPM_ARGS += --iteration $(ITERATION) -v $(VERSION)
 
