@@ -1,13 +1,14 @@
 NAME         := netatalk3
 VERSION      = 3.1.7.20150824-a57afbb
-ITERATION    := 6
+ITERATION    := 8
 SOURCE_URL   := https://github.com/Netatalk/Netatalk/archive/a57afbbccf3e55cf2e939ad1d88c7b2b0ec8f0c5.tar.gz
 FETCHED_FILE := $(NAME)-$(VERSION).tar.gz
 DEPENDS      := "openssl" "avahi-daemon" "libcrack2" "libdb6.0" "libacl1" \
-	            "libgcrypt20" "libwrap0"
+                "libgcrypt20" "libwrap0" "libdbus-glib-1-2" "python-dbus"
 BUILDDEPENDS := "libssl-dev" "libavahi-client-dev" "autoconf" "automake" \
                 "bison" "libtool" "pkg-config" "libcrack2-dev" "libc-dev" \
-                "libdb6.0-dev" "libacl1-dev" "libgcrypt20-dev" "libwrap0-dev"
+                "libdb6.0-dev" "libacl1-dev" "libgcrypt20-dev" "libwrap0-dev" \
+                "libdbus-glib-1-dev"
 CONFLICTS    := "netatalk"
 
 PACKAGE_URL := https://github.com/simonvetter/afpfs-ng
@@ -43,6 +44,7 @@ build:
 		--with-cnid-cdb-backend \
 		--with-libgcrypt \
 		--enable-tcp-wrappers \
+		--with-afpstats \
 		--enable-pgp-uam
 	$(MAKE) -C '$(SBUILDDIR)'
 	$(MAKE) -C '$(SBUILDDIR)' install DESTDIR='$(SDESTDIR)'
