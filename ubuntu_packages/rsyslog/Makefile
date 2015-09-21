@@ -1,4 +1,4 @@
-NAME         := rsyslog
+NAME         := rsyslog8
 VERSION      = 8.12.0
 ITERATION    := 2
 SOURCE_URL   := http://www.rsyslog.com/files/download/rsyslog/rsyslog-$(VERSION).tar.gz
@@ -9,7 +9,7 @@ BUILDDEPENDS := "libgnutls-dev" "librelp0=1.2.8-1" "bison" "libjson0-dev" \
 	            "libjson0-dev" "zlib1g-dev" "libgcrypt11-dev" "libestr-dev" \
 				"uuid-dev" "python-docutils"
 
-CONFLICTS := "rsyslog-gnutls" "rsyslog-relp"
+CONFLICTS := "rsyslog" "rsyslog-gnutls" "rsyslog-relp"
 PACKAGE_URL := http://www.librelp.com/
 PACKAGE_DESCRIPTION := A reliable logging library.
 
