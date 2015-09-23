@@ -1,0 +1,19 @@
+description "Log Courier"
+
+chdir /var/lib/log-courier
+
+start on runlevel [2345]
+stop on runlevel [!2345]
+
+script
+    if [ -f /etc/default/log-courier ]; then
+       . /etc/default/log-courier
+    fi
+    if [ -z "$LOG_COURIER_PARAMS" ]; then
+        LOG_COURIER_PARAMS="-config /etc/log-courier.conf"
+    fi
+
+    exec /usr/bin/log-courier $LOG_COURIER_PARAMS
+end script
+
+respawn

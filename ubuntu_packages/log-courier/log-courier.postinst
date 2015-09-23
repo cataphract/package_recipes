@@ -1,0 +1,21 @@
+#!/bin/sh -e
+
+case "$1" in
+    configure)
+
+  if apparmor_status > /dev/null; then
+    apparmor_parser -r /etc/apparmor.d/usr.bin.log-courier
+  fi
+  if initctl status log-courier | grep start/running; then
+    service restart log-courier
+  fi
+    ;;
+
+    abort-upgrade|abort-remove|abort-deconfigure)
+    ;;
+
+    *)
+	echo "postinst called with unknown argument \`$1'" >&2
+	exit 1
+    ;;
+esac

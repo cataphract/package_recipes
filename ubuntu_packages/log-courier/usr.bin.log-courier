@@ -1,0 +1,26 @@
+#include <tunables/global>
+
+/usr/bin/log-courier {
+  #include <abstractions/base>
+  #include <abstractions/nameservice>
+
+  deny capability dac_override,
+  deny capability net_admin,
+
+  capability block_suspend,
+
+  /var/lib/log-courier/.log-courier rw,
+  /var/lib/log-courier/.log-courier.new rw,
+
+  /etc/log-courier.conf r,
+  /etc/log-courier.d/ r,
+  /etc/log-courier.d/* r,
+  /etc/log_certs/ca.crt r,
+  /etc/log_certs/client.crt r,
+  /etc/log_certs/client.key r,
+  /proc/sys/kernel/hostname r,
+  /proc/sys/net/core/somaxconn r,
+  /usr/bin/log-courier mr,
+  /**/ r,
+  /**.log r,
+}
