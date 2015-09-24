@@ -1,7 +1,9 @@
 #!/bin/sh -e
 
-if initctl status log-courier | grep start/running; then
-  service stop log-courier
+if [ "$1" = "purge" ] || [ "$1" == "remove" ]; then
+  if initctl status log-courier | grep start/running; then
+    initctl stop log-courier
+  fi
 fi
 
 if [ "$1" = "purge" ]; then

@@ -7,7 +7,7 @@ case "$1" in
     apparmor_parser -r /etc/apparmor.d/usr.bin.log-courier
   fi
   if initctl status log-courier | grep start/running; then
-    service restart log-courier
+    initctl restart log-courier
   fi
     ;;
 
