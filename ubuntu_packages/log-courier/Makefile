@@ -1,6 +1,6 @@
 NAME         := log-courier
 VERSION      = 1.8.1
-ITERATION    := 6
+ITERATION    := 9
 SOURCE_URL   := https://github.com/driskell/log-courier/archive/v$(VERSION).tar.gz
 FETCHED_FILE := $(NAME)-$(VERSION).tar.gz
 BUILDDEPENDS := "git"

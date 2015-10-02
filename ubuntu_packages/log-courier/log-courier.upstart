@@ -5,6 +5,9 @@ chdir /var/lib/log-courier
 start on runlevel [2345]
 stop on runlevel [!2345]
 
+setuid root
+setgid adm
+
 script
     if [ -f /etc/default/log-courier ]; then
        . /etc/default/log-courier
