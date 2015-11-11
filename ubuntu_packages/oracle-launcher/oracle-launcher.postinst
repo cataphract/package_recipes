@@ -1,0 +1,22 @@
+#!/bin/sh -e
+
+case "$1" in
+    configure)
+
+  if apparmor_status > /dev/null; then
+    apparmor_parser -r /etc/apparmor.d/opt.oracle-launcher.main.js
+  fi
+  if initctl status oracle-launcher | grep start/running; then
+    initctl reload-configuration
+    initctl restart oracle-launcher
+  fi
+    ;;
+
+    abort-upgrade|abort-remove|abort-deconfigure)
+    ;;
+
+    *)
+	echo "postinst called with unknown argument \`$1'" >&2
+	exit 1
+    ;;
+esac

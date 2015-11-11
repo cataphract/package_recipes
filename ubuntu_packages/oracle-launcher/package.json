@@ -1,0 +1,8 @@
+{
+  "description": "Launches new Oracle instances for testing purposes",
+  "dependencies": {
+    "nconf": "~0.8.2",
+    "nconf-yaml": "~1.0.1",
+    "ipaddr.js": "~1.0.4"
+  }
+}

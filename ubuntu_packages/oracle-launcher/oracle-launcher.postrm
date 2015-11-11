@@ -1,0 +1,11 @@
+#!/bin/bash -e
+
+if [[ $1 = "purge" || $1 = "remove" ]]; then
+  if initctl status oracle-launcher | grep start/running; then
+    initctl stop oracle-launcher
+  fi
+fi
+
+if [[ $1 = "purge" ]]; then
+  rm -rf /etc/oracle-launcher
+fi

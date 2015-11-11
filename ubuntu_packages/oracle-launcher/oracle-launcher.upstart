@@ -1,0 +1,14 @@
+description "Oracle launcher"
+
+chdir /etc/oracle-launcher
+
+start on runlevel [2345]
+stop on runlevel [!2345]
+
+script
+  export certificate=cert.pem
+  export privateKey=key.pem
+  exec /opt/oracle-launcher/main.js
+end script
+
+respawn
