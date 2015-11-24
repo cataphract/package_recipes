@@ -4,7 +4,7 @@ set -e
 set -x
 
 VERSION="3.2.1.$(date +%Y%m%d)"
-ITERATION=9
+ITERATION=10
 
 cd /opt/transmart-data/R
 export R_PREFIX=/opt/R
