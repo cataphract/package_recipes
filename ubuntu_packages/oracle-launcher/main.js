@@ -13,13 +13,13 @@ const DEFAULT_CONFIG_FILE          = '/etc/oracle-launcher/config.yaml'
 const DEFAULT_SERVER_PORT          = 55397
 const DEFAULT_CONTAINER_PORT_START = DEFAULT_SERVER_PORT + 1
 const DEFAULT_MAX_CONTAINERS       = 6
-const DEFAULT_TIMEOUT              = 3600 * 1000
+const DEFAULT_TIMEOUT              = 7200 * 1000
+const DEFAULT_READY_TIMEOUT        = 30 * 1000
 const DEFAULT_DOCKER_IMAGE         = 'docker-hub.thehyve.net/oracle-12c'
 const DEFAULT_IPTABLES_CHAIN       = 'oracle'
 
 const DOCKER_EXEC = '/usr/bin/docker'
 const IPTABLES_EXEC = '/sbin/iptables'
-const IP6TABLES_EXEC = '/sbin/ip6tables'
 
 nconf.defaults({
     serverPort:    DEFAULT_SERVER_PORT,
@@ -27,6 +27,7 @@ nconf.defaults({
     dockerImage:   DEFAULT_DOCKER_IMAGE,
     maxContainers: DEFAULT_MAX_CONTAINERS,
     timeout:       DEFAULT_TIMEOUT,
+    readyTimeout:  DEFAULT_READY_TIMEOUT,
     iptablesChain: DEFAULT_IPTABLES_CHAIN
 })
 nconf.argv().env().file({ file: DEFAULT_CONFIG_FILE, format: nconf_yaml })
@@ -178,48 +179,49 @@ var Client = (function() {
     }
 
     function Client_addFirewallRule() {
-        var iptablesRet, program
+        var iptablesRet,
+            program = IPTABLES_EXEC
         this.log('Adding firewall rule, accepting connections on port %d', this.port)
         var parsedIp = ipaddr.process(this.socket.remoteAddress)
+        if (parsedIp.kind() != 'ipv4') {
+            this.log("Only IPv4 addresses are allowed; got %s", parsedIp)
+            return false
+        }
 
-        program = parsedIp.kind() === 'ipv4' ?
-            IPTABLES_EXEC : IP6TABLES_EXEC
-
-        this.log("Invoking %s", program)
-        iptablesRet = childProcess.spawnSync(program , [
+        var parameters = [
+            '-t', 'nat',
             '-A', nconf.get('iptablesChain'),
             '-s', parsedIp.toString(), '-p', 'tcp',
-            '--dport', this.port, '-j', 'ACCEPT'
-        ])
+            '--dport', this.port, '-j', 'DOCKER'
+        ]
+
+        this.log("Invoking %s %s", program, parameters.join(' '))
+        iptablesRet = childProcess.spawnSync('iptables' , parameters)
 
         if (iptablesRet.status != 0) {
             this.log('Failed adding iptables rule: %d %s', iptablesRet.status,
                 iptablesRet.stderr ? iptablesRet.stderr.toString() : '(null)')
             return false
         } else {
-            this.iptablesParams = [program, parsedIp.toString(), this.port]
+            this.iptablesParams = parameters
         }
         return true
     }
 
     function Client_deleteFirewallRule() {
-        var iptablesRet, program, ip, port
+        var iptablesRet,
+            program = IPTABLES_EXEC,
+            parameters = this.iptablesParams
 
         if (!this.iptablesParams) {
             return true
         }
 
-        console.log("Client %d: Removing firewall rule", this.n)
-        program = this.iptablesParams[0]
-        ip = this.iptablesParams[1]
-        port = this.iptablesParams[2]
-        this.iptablesParams = undefined
+        parameters[parameters.indexOf('-A')] = '-D'
 
-        iptablesRet = childProcess.spawnSync(program, [
-            '-D', nconf.get('iptablesChain'),
-            '-s', ip, '-p', 'tcp',
-            '--dport', port, '-j', 'ACCEPT'
-        ])
+        this.log("Removing firewall rule with %s %s", program, parameters.join(' '))
+
+        iptablesRet = childProcess.spawnSync(program, parameters)
 
         if (iptablesRet.status !== 0) {
             console.log("Client %d: gailed deleting iptables rule: %s", this.n, iptablesRet)
@@ -356,7 +358,7 @@ var Client = (function() {
             }
         }.bind(this))
         this.container.readyTimeout = setTimeout(
-            Client_databaseReadinessTimeout.bind(this), 15000)
+            Client_databaseReadinessTimeout.bind(this), nconf.get('readyTimeout'))
     }
 
     Client.prototype.isStoppable = function Client_isStoppable() {
@@ -392,10 +394,8 @@ function initialCleanup() {
     console.log('Done destroying possible leftover containers')
 
     var chain = nconf.get('iptablesChain')
-    console.log("Flushing iptables chain %s (IPv4)", chain)
-    childProcess.spawnSync(IPTABLES_EXEC, ['-F', chain])
-    console.log("Flushing iptables chain %s (IPv6)", chain)
-    childProcess.spawnSync(IP6TABLES_EXEC, ['-F', chain])
+    console.log("Flushing iptables chain %s", chain)
+    childProcess.spawnSync(IPTABLES_EXEC, ['-t', '-nat', '-F', chain])
 }
 initialCleanup()
 
