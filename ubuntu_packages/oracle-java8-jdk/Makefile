@@ -1,8 +1,8 @@
 # based on webupd8 ppa's package
 #
 NAME         := oracle-java8-jdk
-_RELEASE     := 60
-_BUILD       := 27
+_RELEASE     := 66
+_BUILD       := 17
 _JAVA_VERSION:= 8u$(_RELEASE)
 VERSION      := $(_JAVA_VERSION)
 ITERATION    := 1
