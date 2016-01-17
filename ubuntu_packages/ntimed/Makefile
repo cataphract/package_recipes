@@ -1,5 +1,6 @@
 NAME         := ntimed
 VERSION      = 0.1-20150116
+ITERATION    := $(shell facter lsbdistcodename)2
 SOURCE_URL   := https://github.com/bsdphk/Ntimed/archive/db0abbb4c8.tar.gz
 FETCHED_FILE := $(NAME)-$(VERSION).tar.gz
 
@@ -17,13 +18,14 @@ SHELL := /bin/bash
 build:
 	cd $(SBUILDDIR) && sh configure --prefix=/usr
 	$(MAKE) -C $(SBUILDDIR)
-	mkdir -p '$(SDESTDIR)'{/usr/bin,/etc/default,/etc/init}
+	mkdir -p '$(SDESTDIR)'{/usr/bin,/etc/default,/lib/systemd/system}
 	cp '$(SBUILDDIR)'/ntimed-client '$(SDESTDIR)'/usr/bin
-	echo 'SERVERS="0.europe.pool.ntp.org 1.europe.pool.ntp.org \
-		2.europe.pool.ntp.org 3.europe.pool.ntp.org"' \
-		> '$(SDESTDIR)'/etc/default/ntimed
-	cp ntimed.conf '$(SDESTDIR)'/etc/init
+	if [[ "$$SYSTEMD" -eq 1 ]]; then \
+		cp $(shell pwd)/ntimed.service '$(SDESTDIR)'/lib/systemd/system/; \
+	fi
 
-FPM_ARGS += --config-files /etc/default/ntimed
+ifndef SYSTEMD
+FPM_ARGS += --deb-upstart $(shell pwd)/ntimed.conf
+endif
 
 package: standard_package

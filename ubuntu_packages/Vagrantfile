@@ -5,11 +5,13 @@
 VAGRANTFILE_API_VERSION = "2"
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
-  config.vm.box = "ubuntu/trusty64"
+  codename = ENV['XENIAL'] ? 'xenial' : 'trusty'
+
+  config.vm.box = codename == 'xenial' ? 'xenial-provisional' : "ubuntu/#{codename}64"
 
   provision_script = <<-eos
     apt-key adv --keyserver keyserver.ubuntu.com --recv 3375DA21
-    echo deb http://apt.thehyve.net/internal/ trusty main > /etc/apt/sources.list.d/internal.list
+    echo deb http://apt.thehyve.net/internal/ #{codename} main > /etc/apt/sources.list.d/internal.list
     apt-get update
     apt-get install -y ruby-dev bsdtar
     gem install fpm
