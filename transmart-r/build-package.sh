@@ -63,8 +63,6 @@ done
 
 if [[ $PACKAGE_TYPE = 'deb' && $USE_SYSTEMD -eq 1 ]]; then
   SERVICE_FILE="--deb-systemd $SERVICE_FILE"
-else
- exit 1
 fi
 
 cd /vagrant
