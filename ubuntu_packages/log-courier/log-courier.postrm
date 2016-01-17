@@ -1,8 +1,10 @@
 #!/bin/sh -e
 
 if [ "$1" = "purge" ] || [ "$1" == "remove" ]; then
-  if initctl status log-courier | grep start/running; then
-    initctl stop log-courier
+  if which initctl > /dev/null; then
+    if initctl status log-courier | grep start/running; then
+      initctl stop log-courier
+    fi
   fi
 fi
 

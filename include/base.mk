@@ -33,6 +33,16 @@ ifndef VERSION
 $(error Did not specify package version)
 endif
 
+ifneq (,$(wildcard /bin/systemctl))
+SYSTEMD := 1
+export SYSTEMD
+endif
+
+ifneq (,$(wildcard /sbin/initctl))
+UPSTART := 1
+export UPSTART
+endif
+
 FPM_ARGS += $(call quoted_map,add_d,$(DEPENDS))
 FPM_ARGS += $(call quoted_map,add_conflicts,$(CONFLICTS))
 FPM_ARGS += $(call quoted_map,add_replaces,$(REPLACES))
@@ -118,6 +128,22 @@ standard_extract: fetch $(BUILDDIR)/.keep
 
 SDESTDIR = $(DESTDIR)/$(SUBDIR)
 #no standard_build
+
+ifdef SYSTEMD
+ifdef SYSTEMD_FILE
+ifeq (deb,$(TARGET_FORMAT))
+FPM_ARGS += --deb-systemd $(SYSTEMD_FILE)
+else
+#error Cannot use SYSTEMD_FILE without deb
+endif
+endif
+endif
+
+ifdef UPSTART
+ifdef UPSTART_FILE
+FPM_ARGS += --deb-upstart $(UPSTART_FILE)
+endif
+endif
 
 ifeq ($(shell test -f /usr/bin/apt-get || echo yum),yum)
 PKG_MANAGER := yum

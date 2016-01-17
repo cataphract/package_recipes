@@ -13,7 +13,7 @@ script
        . /etc/default/log-courier
     fi
     if [ -z "$LOG_COURIER_PARAMS" ]; then
-        LOG_COURIER_PARAMS="-config /etc/log-courier.conf"
+        LOG_COURIER_PARAMS="-config=/etc/log-courier.conf"
     fi
 
     exec /usr/bin/log-courier $LOG_COURIER_PARAMS
