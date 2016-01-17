@@ -5,6 +5,8 @@ VAGRANTFILE_API_VERSION = '2'
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   if ENV['UBUNTU']
     config.vm.box = 'ubuntu/trusty64'
+  elsif ENV['XENIAL']
+    config.vm.box = 'xenial-provisional'
   elsif ENV['CENTOS7']
     config.vm.box = 'developervms/centos7-64'
   else
