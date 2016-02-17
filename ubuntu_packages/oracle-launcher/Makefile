@@ -1,16 +1,17 @@
 NAME         := oracle-launcher
-VERSION      = 0.1.0
-ITERATION    := 11
+VERSION      = 0.1.1
+ITERATION_D  := 13
 FETCHED_FILE := $(NAME)-$(VERSION).tar.gz
 DEPENDS      := "nodejs" "iptables" #"docker-engine"
-BUILDDEPENDS := "nodejs"
+BUILDDEPENDS := "nodejs" "npm"
 
 PACKAGE_URL := https://github.com/thehyve/package_recipes/tree/master/ubuntu_packages/oracle-launcher
 PACKAGE_DESCRIPTION := Launches Oracle containers on requests
 
 POSTINSTALL := oracle-launcher.postinst
 POSTUNINSTALL := oracle-launcher.postrm
-FPM_ARGS := --deb-upstart $(shell pwd)/oracle-launcher.upstart
+UPSTART_FILE := $(shell pwd)/oracle-launcher.upstart
+SYSTEMD_FILE := $(shell pwd)/oracle-launcher.service
 
 include ../include/base.mk
 

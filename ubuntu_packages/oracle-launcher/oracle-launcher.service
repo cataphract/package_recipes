@@ -1,0 +1,14 @@
+[Unit]
+Description=Oracle launcher
+After=network.target
+
+[Service]
+Type=simple
+Environment="certificate=cert.pem"
+Environment="privateKey=key.pem"
+WorkingDirectory=/etc/oracle-launcher
+ExecStart=/opt/oracle-launcher/main.js
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

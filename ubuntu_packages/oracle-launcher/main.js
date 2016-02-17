@@ -21,6 +21,7 @@ const DEFAULT_IPTABLES_CHAIN       = 'oracle'
 const DOCKER_EXEC = '/usr/bin/docker'
 const IPTABLES_EXEC = '/sbin/iptables'
 
+nconf.argv().env().file({ file: DEFAULT_CONFIG_FILE, format: nconf_yaml })
 nconf.defaults({
     serverPort:    DEFAULT_SERVER_PORT,
     contPortStart: DEFAULT_CONTAINER_PORT_START,
@@ -30,7 +31,6 @@ nconf.defaults({
     readyTimeout:  DEFAULT_READY_TIMEOUT,
     iptablesChain: DEFAULT_IPTABLES_CHAIN
 })
-nconf.argv().env().file({ file: DEFAULT_CONFIG_FILE, format: nconf_yaml })
 
 if (nconf.get('privateKey') == undefined) {
     console.log('Private key not defined')

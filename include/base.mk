@@ -9,8 +9,6 @@ PKGDIR = /vagrant
         extract standard_extract build install_builddepends
 .DELETE_ON_ERROR:
 
-ITERATION ?= 1
-
 NULL :=
 SPACE := $(NULL) $(NULL)
 
@@ -48,6 +46,15 @@ FPM_ARGS += $(call quoted_map,add_conflicts,$(CONFLICTS))
 FPM_ARGS += $(call quoted_map,add_replaces,$(REPLACES))
 FPM_ARGS += $(call quoted_map,add_provides,$(PROVIDES))
 FPM_ARGS += $(call quoted_map,add_provides,$(CONF_FILES))
+
+ifndef ITERATION
+ifdef ITERATION_D
+ITERATION := $(shell facter lsbdistcodename)$(ITERATION_D)
+BUILDDEPENDS += "facter"
+endif
+endif
+
+ITERATION ?= 1
 
 FPM_ARGS += --iteration $(ITERATION) -v $(VERSION)
 
