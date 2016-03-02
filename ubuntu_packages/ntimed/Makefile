@@ -1,6 +1,6 @@
 NAME         := ntimed
 VERSION      = 0.1-20150116
-ITERATION    := $(shell facter lsbdistcodename)2
+ITERATION_D  := 3
 SOURCE_URL   := https://github.com/bsdphk/Ntimed/archive/db0abbb4c8.tar.gz
 FETCHED_FILE := $(NAME)-$(VERSION).tar.gz
 
