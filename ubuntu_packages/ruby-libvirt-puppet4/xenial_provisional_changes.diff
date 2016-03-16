@@ -1,0 +1,43 @@
+diff --git a/ubuntu_packages/ruby-libvirt-puppet4/Makefile b/ubuntu_packages/ruby-libvirt-puppet4/Makefile
+index bc57850..666dfbe 100644
+--- a/ubuntu_packages/ruby-libvirt-puppet4/Makefile
++++ b/ubuntu_packages/ruby-libvirt-puppet4/Makefile
+@@ -1,5 +1,6 @@
+ NAME         := ruby-libvirt-puppet4
+ VERSION      = 0.6.0
++ITERATION_D  := 2
+ FETCHED_FILE := $(NAME)-$(VERSION).tar.gz
+ DEPENDS      := "puppet-agent" "libvirt0"
+ BUILDDEPENDS := gcc make libvirt-dev
+@@ -10,11 +11,11 @@ PACKAGE_DESCRIPTION := ruby-libvirt provides Ruby bindings for libvirt. With the
+ include ../include/base.mk
+ 
+ $(CACHEDIR)/puppetlabs-release.deb: $(CACHEDIR)/.keep
+-	wget -O '$@' https://apt.puppetlabs.com/puppetlabs-release-pc1-trusty.deb
++	wget -O '$@' https://apt.puppetlabs.com/puppetlabs-release-pc1-wily.deb
+ 
+ install_repos: $(CACHEDIR)/puppetlabs-release.deb
+ 	sudo dpkg -i '$<'
+-	sudo apt-get update
++	sudo apt-get update || true
+ 
+ fetch: install_repos
+ 	cd $(CACHEDIR) && apt-get download puppet-agent
+@@ -29,7 +30,7 @@ CHROOT_BASE=$(SBUILDDIR)/merged
+ 
+ build:
+ 	mkdir -p $(CHROOT_BASE) $(SDESTDIR)
+-	mountpoint $(CHROOT_BASE) || sudo mount -t overlayfs overlayfs -o lowerdir=$(SBUILDDIR),upperdir=$(SDESTDIR) $(CHROOT_BASE)
++	mountpoint $(CHROOT_BASE) || sudo mount -t overlayfs overlayfs -o lowerdir=$(SBUILDDIR),upperdir=$(SDESTDIR),workdir=$$(mktemp -d) $(CHROOT_BASE)
+ 	mkdir -p '$(CHROOT_BASE)'/{usr,bin,lib,lib64,proc,dev}
+ 	cp /etc/resolv.conf $(CHROOT_BASE)/etc
+ 	for d in usr bin lib lib64 proc dev; do \
+@@ -39,7 +40,7 @@ build:
+ 	sudo chown -R $(shell whoami) '$(SDESTDIR)'
+ 	$(MAKE) umount
+ 	rm $(SDESTDIR)/etc/resolv.conf
+-	rmdir $(SDESTDIR)/{bin,etc,dev,lib,lib64,proc}
++	for d in bin etc dev lib lib64 proc; do ! test -d $(SDESTDIR)/$$d || rmdir $(SDESTDIR)/$$d; done
+ 
+ package: standard_package
+ 
