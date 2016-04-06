@@ -10,7 +10,6 @@ ExecStartPre=/usr/bin/log-courier ${LOG_COURIER_ARGS} -config-test
 ExecStart=/usr/bin/log-courier ${LOG_COURIER_ARGS}
 ExecReload=/bin/kill -s HUP $MAINPID
 ExecStop=/bin/kill -s TERM $MAINPID
-PrivateTmp=true
 StandardError=syslog
 
 [Install]
