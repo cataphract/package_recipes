@@ -4,6 +4,9 @@ After=syslog.target network.target remote-fs.target nss-lookup.target
 
 [Service]
 Type=simple
+User=root
+Group=adm
+WorkingDirectory=/var/lib/log-courier
 Environment="LOG_COURIER_ARGS=-config=/etc/log-courier.conf"
 EnvironmentFile=/etc/default/log-courier
 ExecStartPre=/usr/bin/log-courier ${LOG_COURIER_ARGS} -config-test

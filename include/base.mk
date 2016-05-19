@@ -49,7 +49,7 @@ FPM_ARGS += $(call quoted_map,add_provides,$(CONF_FILES))
 
 ifndef ITERATION
 ifdef ITERATION_D
-ITERATION := $(shell facter lsbdistcodename)$(ITERATION_D)
+ITERATION = $(shell facter lsbdistcodename)$(ITERATION_D)
 BUILDDEPENDS += "facter"
 endif
 endif
