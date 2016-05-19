@@ -1,7 +1,7 @@
 NAME         := simp-le
 VERSION      = 20151207.ac836bc
 _COMMIT      := ac836bc0af988cb14dc0a83dc2039e7fa541b677
-ITERATION    := 1
+ITERATION_D  := 1
 SOURCE_URL   := https://github.com/kuba/simp_le/archive/$(_COMMIT).tar.gz
 FETCHED_FILE := $(NAME)-$(VERSION).tar.gz
 BUILDDEPENDS := "git" "python-virtualenv" "fakechroot" "python-dev" \
