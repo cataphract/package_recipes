@@ -108,7 +108,7 @@ ifeq ($(FPM_SOURCE),dir)
 FPM_CMD = fpm -t $(TARGET_FORMAT) -s $(FPM_SOURCE) $(FPM_ARGS) -n $(NAME) \
 	-C $(SDESTDIR) --deb-user root --deb-group root .
 else
-FPM_CMD = fpm -t $(TARGET_FORMAT) -s $(FPM_SOURCE) $(FPM_ARGS) $(NAME)
+FPM_CMD = fpm $(FPM_FLAGS) -t $(TARGET_FORMAT) -s $(FPM_SOURCE) $(FPM_ARGS) $(NAME)
 endif
 
 all: package
