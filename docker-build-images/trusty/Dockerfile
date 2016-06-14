@@ -9,7 +9,8 @@ RUN apt-key adv --keyserver keyserver.ubuntu.com --recv 3375DA21 && \
     apt-get install -y --no-install-recommends \
         ruby-dev bsdtar sudo \
         make gcc g++ pkg-config binutils \
-        git curl wget facter && \
+        git curl wget \
+        facter lsb-release && \
     rm -rf /var/lib/apt/lists/* && \
     gem install --no-ri --no-rdoc -v 1.6.1 fpm && \
     echo 'user   ALL=(ALL:ALL) NOPASSWD: ALL' >> /etc/sudoers && \
