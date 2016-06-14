@@ -12,6 +12,7 @@ PACKAGE=$2
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 docker run --rm \
+  --privileged \
   -e LOCAL_USER_ID=$(id -u $USER) \
   -v "$DIR":/vagrant \
   -v "$DIR"/../include:/vagrant/include \

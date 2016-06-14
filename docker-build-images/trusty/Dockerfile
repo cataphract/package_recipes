@@ -7,7 +7,9 @@ RUN apt-key adv --keyserver keyserver.ubuntu.com --recv 3375DA21 && \
     echo deb http://apt.thehyve.net/internal/ trusty main > /etc/apt/sources.list.d/internal.list && \
     apt-get update -q && \
     apt-get install -y --no-install-recommends \
-        ruby-dev bsdtar sudo make gcc g++ pkg-config curl git binutils && \
+        ruby-dev bsdtar sudo \
+        make gcc g++ pkg-config binutils \
+        git curl wget facter && \
     rm -rf /var/lib/apt/lists/* && \
     gem install --no-ri --no-rdoc -v 1.6.1 fpm && \
     echo 'user   ALL=(ALL:ALL) NOPASSWD: ALL' >> /etc/sudoers && \
