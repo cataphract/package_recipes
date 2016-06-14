@@ -1,5 +1,6 @@
 NAME         := ruby-libvirt-puppet4
 VERSION      = 0.6.0
+ITERATION_D  := 3
 FETCHED_FILE := $(NAME)-$(VERSION).tar.gz
 DEPENDS      := "puppet-agent" "libvirt0"
 BUILDDEPENDS := gcc make libvirt-dev
@@ -9,8 +10,10 @@ PACKAGE_DESCRIPTION := ruby-libvirt provides Ruby bindings for libvirt. With the
 
 include ../include/base.mk
 
+DIST_CODENAME := $(shell facter lsbdistcodename)
+
 $(CACHEDIR)/puppetlabs-release.deb: $(CACHEDIR)/.keep
-	wget -O '$@' https://apt.puppetlabs.com/puppetlabs-release-pc1-trusty.deb
+	curl -L -f -o '$@' https://apt.puppetlabs.com/puppetlabs-release-pc1-$(DIST_CODENAME).deb
 
 install_repos: $(CACHEDIR)/puppetlabs-release.deb
 	sudo dpkg -i '$<'
@@ -39,7 +42,7 @@ build:
 	sudo chown -R $(shell whoami) '$(SDESTDIR)'
 	$(MAKE) umount
 	rm $(SDESTDIR)/etc/resolv.conf
-	rmdir $(SDESTDIR)/{bin,etc,dev,lib,lib64,proc}
+	for d in bin etc dev lib lib64 proc; do ! test -d $(SDESTDIR)/$$d || rmdir $(SDESTDIR)/$$d; done
 
 package: standard_package
 
