@@ -1,0 +1,19 @@
+#!/bin/bash
+
+set -x
+
+if [[ $# != 2 ]]; then
+  echo "Expected trusty/xenial <package name>" >&2
+  exit 2
+fi
+
+RELEASE=$1
+PACKAGE=$2
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+docker run --rm \
+  -e LOCAL_USER_ID=$(id -u $USER) \
+  -v "$DIR":/vagrant \
+  -v "$DIR"/../include:/vagrant/include \
+  thehyve/buildenv-fpm:"$RELEASE" \
+  bash -c "sudo apt-get update && cd /vagrant/'$PACKAGE' && make"
