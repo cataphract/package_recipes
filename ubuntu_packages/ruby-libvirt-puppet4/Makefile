@@ -1,6 +1,6 @@
 NAME         := ruby-libvirt-puppet4
 VERSION      = 0.6.0
-ITERATION_D  := 3
+ITERATION_D  := 4
 FETCHED_FILE := $(NAME)-$(VERSION).tar.gz
 DEPENDS      := "puppet-agent" "libvirt0"
 BUILDDEPENDS := gcc make libvirt-dev
@@ -23,31 +23,14 @@ fetch: install_repos
 	cd $(CACHEDIR) && apt-get download puppet-agent
 
 extract:
-	mkdir -p $(SBUILDDIR)
 	dpkg-deb --extract $(CACHEDIR)/puppet-agent_*.deb  '$(SBUILDDIR)'
 
-SHELL := /bin/bash
 
-CHROOT_BASE=$(SBUILDDIR)/merged
+CHROOT_COMMAND := '/opt/puppetlabs/puppet/bin/gem install ruby-libvirt --version $(VERSION)'
+include ../include/overlay_chroot.mk
 
 build:
-	mkdir -p $(CHROOT_BASE) $(SDESTDIR)
-	mountpoint $(CHROOT_BASE) || sudo mount -t overlayfs overlayfs -o lowerdir=$(SBUILDDIR),upperdir=$(SDESTDIR) $(CHROOT_BASE)
-	mkdir -p '$(CHROOT_BASE)'/{usr,bin,lib,lib64,proc,dev}
-	cp /etc/resolv.conf $(CHROOT_BASE)/etc
-	for d in usr bin lib lib64 proc dev; do \
-		mountpoint '$(CHROOT_BASE)'/$$d || sudo mount --rbind /$$d '$(CHROOT_BASE)'/$$d; done
-	sudo chroot '$(CHROOT_BASE)' /bin/bash -e -c \
-		'/opt/puppetlabs/puppet/bin/gem install ruby-libvirt --version $(VERSION)'
-	sudo chown -R $(shell whoami) '$(SDESTDIR)'
-	$(MAKE) umount
-	rm $(SDESTDIR)/etc/resolv.conf
-	for d in bin etc dev lib lib64 proc; do ! test -d $(SDESTDIR)/$$d || rmdir $(SDESTDIR)/$$d; done
+	$(MAKE) build_on_overlay
 
 package: standard_package
 
-umount:
-	for d in usr bin lib lib64 proc dev; do \
-		! mountpoint '$(CHROOT_BASE)'/$$d || sudo umount -l '$(CHROOT_BASE)'/$$d; done
-	! mountpoint $(CHROOT_BASE) || sudo umount -l $(CHROOT_BASE)
-clean: umount
