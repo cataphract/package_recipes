@@ -19,4 +19,5 @@ RUN apt-key adv --keyserver keyserver.ubuntu.com --recv 3375DA21 && \
 
 ADD https://github.com/Yelp/dumb-init/releases/download/v1.1.0/dumb-init_1.1.0_amd64 /usr/local/bin/dumb-init
 RUN chmod +x /usr/local/bin/dumb-init
+ADD entrypoint /
 ENTRYPOINT [ "dumb-init", "/entrypoint" ]
