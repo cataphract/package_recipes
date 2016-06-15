@@ -1,0 +1,34 @@
+#!/bin/bash
+
+set -x
+
+if [[ $# != 1 ]]; then
+  echo "Expected codename" >&2
+  exit 1
+fi
+
+RELEASE=$1
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+docker run --rm \
+  --privileged \
+  -e LOCAL_USER_ID=$(id -u $USER) \
+  -v "$DIR":/vagrant \
+  -i \
+  thehyve/buildenv-fpm:"$RELEASE" \
+  bash <<'EOS'
+  set -e
+  ! which apt-get || sudo apt-get update
+  sudo -i gem install --no-rdoc --no-ri --version 3.8.7 puppet
+  if [[ $(bash -l -c "ruby -e 'puts RUBY_VERSION'") =~ ^2\.3\. ]]; then
+    sudo -i gem install --no-rdoc --no-ri --version 1.1.0 syck
+    sudo sed -i '1irequire "syck"' \
+      /var/lib/gems/2.3.0/gems/puppet-3.8.7/lib/puppet/vendor/safe_yaml/lib/safe_yaml/syck_node_monkeypatch.rb
+  fi
+  sudo -i puppet module install puppetlabs-vcsrepo --version 1.0.1
+  sudo -i FACTER_override_user=user puppet apply /vagrant/manifests/default.pp
+  sudo ln -s /bin/true /usr/local/bin/systemctl
+  sudo rm -f /sbin/initctl
+  sudo ln -s /bin/true /sbin/initctl
+  /vagrant/build-package.sh
+EOS

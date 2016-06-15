@@ -7,7 +7,7 @@ if $::operatingsystem == 'Ubuntu' {
         'tex-gyre', # textlive-fonts-recommended recommends this package
         'libreadline-dev',
         'ruby-dev',
-        'php5-cli',
+        $::lsbdistcodename ? { 'trusty' => 'php5-cli', default => 'php7.0-cli' },
         'build-essential',
         'gfortran',
         'git', # centos mach
@@ -26,7 +26,7 @@ if $::operatingsystem == 'Ubuntu' {
         'ruby-devel',
         'php',
         'git',
-        $::operatingsystemmajrelease ? { 6 => 'gcc-g++', default => 'gcc-c++' },
+        'gcc-c++',
         'gcc-gfortran',
         'rpm-build',
     ]
@@ -38,21 +38,22 @@ if $::operatingsystem == 'Ubuntu' {
 
 package { 'fpm':
     provider => 'gem',
-    ensure   => latest,
+    ensure   => present,
     require  => $gem_req,
 }
 
 package { $native_packages: }
 
+$user = "$::override_user" ? { '' => 'vagrant', default => $::override_user }
 file { '/opt':
-    owner => 'vagrant',
+    owner => $user,
 } ->
 vcsrepo { '/opt/transmart-data':
     ensure   => latest,
     provider => git,
     source   => 'git://github.com/transmart/transmart-data.git',
     revision => 'master',
-    user     => 'vagrant',
+    user     => $user,
 }
 
 Package['git'] -> Vcsrepo <| |>

@@ -4,7 +4,7 @@ set -e
 set -x
 
 VERSION="3.2.1.$(date +%Y%m%d)"
-ITERATION=12
+ITERATION=13
 
 cd /opt/transmart-data/R
 export R_PREFIX=/opt/R
@@ -20,7 +20,7 @@ fi
 
 if [[ $USE_SYSTEMD = 1 ]]; then
   INSTALL_TARGET=install_rserve_unit
-  SERVICE_FILE=$(dirname $(dirname $(which systemctl)))/lib/systemd/system/rserve.service
+  SERVICE_FILE=$(dirname $(dirname $(which /usr/bin/systemctl /bin/systemctl)))/lib/systemd/system/rserve.service
   USER_CONFIG_FILE=/etc/systemd/system/rserve.service.d/rserve-user.conf
   sudo mkdir -p "$(dirname "$USER_CONFIG_FILE")"
   echo -e '[Service]\nUser=transmart' | sudo tee "$USER_CONFIG_FILE"
