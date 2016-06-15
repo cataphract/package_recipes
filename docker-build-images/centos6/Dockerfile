@@ -15,6 +15,7 @@ RUN echo 'user   ALL=(ALL:ALL) NOPASSWD: ALL' >> /etc/sudoers && \
 
 ADD entrypoint /
 ADD fpm_wrapper /usr/local/bin/fpm
+ADD facter_wrapper /usr/local/bin/facter
 ADD https://github.com/Yelp/dumb-init/releases/download/v1.1.0/dumb-init_1.1.0_amd64 /usr/local/bin/dumb-init
 RUN chmod +x /usr/local/bin/dumb-init
 ENTRYPOINT [ "dumb-init", "/entrypoint" ]
