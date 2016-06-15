@@ -17,5 +17,6 @@ RUN apt-key adv --keyserver keyserver.ubuntu.com --recv 3375DA21 && \
     curl -L -f -o /usr/local/bin/gosu "https://github.com/tianon/gosu/releases/download/1.9/gosu-$(dpkg --print-architecture)" && \
     chmod +x /usr/local/bin/gosu
 
-ADD entrypoint /
-ENTRYPOINT [ "/entrypoint" ]
+ADD https://github.com/Yelp/dumb-init/releases/download/v1.1.0/dumb-init_1.1.0_amd64 /usr/local/bin/dumb-init
+RUN chmod +x /usr/local/bin/dumb-init
+ENTRYPOINT [ "dumb-init", "/entrypoint" ]
