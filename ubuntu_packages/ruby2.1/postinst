@@ -1,0 +1,16 @@
+#!/bin/sh
+
+set -e
+
+if [ "$1" = "configure" ]
+then
+        update-alternatives --install /usr/bin/gem gem /opt/ruby2.1/bin/gem 182
+        update-alternatives \
+		--install /usr/bin/ruby ruby /opt/ruby2.1/bin/ruby 52 \
+        --slave /usr/bin/erb erb /opt/ruby2.1/bin/erb \
+        --slave /usr/bin/testrb testrb /opt/ruby2.1/bin/testrb \
+        --slave /usr/bin/rake rake /opt/ruby2.1/bin/rake \
+        --slave /usr/bin/irb irb /opt/ruby2.1/bin/irb \
+        --slave /usr/bin/rdoc rdoc /opt/ruby2.1/bin/rdoc \
+        --slave /usr/bin/ri ri /opt/ruby2.1/bin/ri
+fi
