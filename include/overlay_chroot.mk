@@ -18,9 +18,9 @@ build_on_overlay:
 	cat /etc/resolv.conf | sudo tee '$(CHROOT_BASE)'/etc/resolv.conf
 	sudo chroot '$(CHROOT_BASE)' /bin/bash -e -c $(CHROOT_COMMAND)
 	$(MAKE) umount_overlay
-	sudo rm -f '$(SDESTDIR)'/etc/resolv.conf '$(SDESTDIR)'/tmp
+	sudo rm -rf '$(SDESTDIR)'/etc/resolv.conf '$(SDESTDIR)'/tmp
 	sudo chown -R $(shell whoami) '$(SDESTDIR)'
 
 umount_overlay:
 	! mountpoint $(CHROOT_BASE) || sudo umount -l $(CHROOT_BASE)
-clean: umount
+clean: umount_overlay
