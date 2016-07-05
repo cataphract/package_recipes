@@ -1,0 +1,7 @@
+#!/bin/sh
+
+set -e
+
+if [ "$1" = "remove" ]; then
+        update-alternatives --remove bundler /opt/ruby2.1/bin/bundler
+fi

@@ -1,0 +1,10 @@
+#!/bin/sh
+
+set -e
+
+if [ "$1" = "configure" ]
+then
+    update-alternatives \
+        --install /usr/bin/bundler bundler /opt/ruby2.1/bin/bundler 52 \
+        --slave /usr/bin/bundle bundle /opt/ruby2.1/bin/bundle
+fi
