@@ -1,9 +1,10 @@
 NAME         := arvados-perl-sdk
 VERSION      = 20160218
 _COMMIT      := fd5fc5a6c2cc3bec082877627d8d395950024930
-ITERATION_D  := 2
-DEPENDS      := "libjson-perl" "libio-socket-ssl-perl" "libwww-perl" "libipc-system-simple-perl" "libarvados-perl"
-BUILDDEPENDS := "libjson-perl" "libio-socket-ssl-perl" "libwww-perl" "libipc-system-simple-perl" "libarvados-perl" "git"
+ITERATION_D  := 4
+DEPENDS      := "libjson-perl" "libio-socket-ssl-perl" "libwww-perl" "libipc-system-simple-perl" "libcrypt-ssleay-perl"
+BUILDDEPENDS := "libjson-perl" "libio-socket-ssl-perl" "libwww-perl" "libipc-system-simple-perl" "libcrypt-ssleay-perl" "git"
+CONFLICTS    := "libarvados-perl"
 SOURCE_URL   := https://github.com/curoverse/arvados/archive/$(_COMMIT).tar.gz
 
 PACKAGE_URL := https://arvados.org/
