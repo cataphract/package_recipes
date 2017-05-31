@@ -22,10 +22,10 @@ add_replaces = $(if $(strip $1),--replaces "$(strip $1)")
 add_provides = $(if $(strip $1),--provides "$(strip $1)")
 add_conf_files = $(if $(strip $1),--config-files "$(strip $1)")
 
-# Replace spaces with +, explode on ", then call add_d after turning + back into spaces
+# Replace spaces with ;, explode on ", then call add_d after turning + back into spaces
 # This is to support: DEPENDS = "package (>= 1.0)" other_pack "some_other_packge"
 # GNU Make implictly thinks a space is a delimiter, so have to change it to read the above line
-quoted_map = $(foreach i,$(subst $(DQUOTE),$(SPACE),$(subst $(SPACE),+,$2)),$(call $1,$(subst +,$(SPACE),$i)))
+quoted_map = $(foreach i,$(subst $(DQUOTE),$(SPACE),$(subst $(SPACE),;,$2)),$(call $1,$(subst ;,$(SPACE),$i)))
 
 ifndef VERSION
 $(error Did not specify package version)
