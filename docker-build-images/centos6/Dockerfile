@@ -7,6 +7,7 @@ RUN yum install --nogpgcheck -y sudo git gcc-c++ rpm-build curl wget pkgconfig g
 RUN gpg --keyserver hkp://keys.gnupg.net --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3 && \
 	{ \curl -sSL https://get.rvm.io | bash -s stable; } && \
 	bash -l -c 'rvm install 2.1 && rvm use 2.1 --default'
+RUN bash -l -c 'gem install --no-ri --no-rdoc -v 0.2.3 ruby-xz'
 RUN bash -l -c 'gem install --no-ri --no-rdoc -v 1.6.1 fpm'
 RUN bash -l -c 'gem install --no-ri --no-rdoc -v 2.4.6 facter'
 RUN echo 'user   ALL=(ALL:ALL) NOPASSWD: ALL' >> /etc/sudoers && \
