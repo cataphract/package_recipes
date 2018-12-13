@@ -1,0 +1,2 @@
+alternatives --install /usr/sbin/sendmail mta /usr/sbin/ssmtp 50
+
