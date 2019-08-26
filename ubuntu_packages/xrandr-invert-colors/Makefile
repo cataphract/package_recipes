@@ -1,6 +1,6 @@
 NAME         := xrandr-invert-colors
-VERSION      = 0.01
-SOURCE_URL   := https://github.com/zoltanp/xrandr-invert-colors/archive/v0.01.tar.gz
+VERSION      = 0.02
+SOURCE_URL   := https://github.com/zoltanp/xrandr-invert-colors/archive/v0.02.tar.gz
 FETCHED_FILE := $(NAME)-$(VERSION).tar.gz
 DEPENDS      := "libxau6" "libxdmcp6" "libxcb-randr0" "libxcb1"
 BUILDDEPENDS := libxcb-randr0-dev
