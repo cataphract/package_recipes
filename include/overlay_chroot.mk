@@ -16,6 +16,7 @@ build_on_overlay:
 		-o lowerdir=/:$(SBUILDDIR),upperdir=$(SDESTDIR),workdir=$$(mktemp -d) $(CHROOT_BASE)
 	sudo rm -f '$(CHROOT_BASE)'/etc/resolv.conf
 	cat /etc/resolv.conf | sudo tee '$(CHROOT_BASE)'/etc/resolv.conf
+	sudo mount --rbind /dev '$(CHROOT_BASE)'/dev/
 	sudo chroot '$(CHROOT_BASE)' /bin/bash -e -c $(CHROOT_COMMAND)
 	$(MAKE) umount_overlay
 	sudo rm -rf '$(SDESTDIR)'/etc/resolv.conf '$(SDESTDIR)'/tmp
