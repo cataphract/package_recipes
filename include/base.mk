@@ -125,7 +125,7 @@ $(FETCHED_FILE_PATH): $(CACHEDIR)/.keep
 
 standard_fetch: $(FETCHED_FILE_PATH)
 
-SUBDIR ?= $(NAME)-$(VERSION)
+SUBDIR ?= $(NAME)-$(subst :,_,$(VERSION))
 SBUILDDIR = $(BUILDDIR)/$(SUBDIR)
 
 standard_extract: fetch $(BUILDDIR)/.keep
