@@ -1,0 +1,36 @@
+#!/bin/bash -e
+
+VERSIONS=(
+5.3.29
+5.4.45
+5.5.38
+5.6.40
+7.0.33
+7.1.33
+7.2.33
+7.3.21
+7.4.9
+)
+
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+function b {
+  local readonly version=$1 zts=$2
+  docker run --rm \
+    --privileged \
+    -e LOCAL_USER_ID=$(id -u $USER) \
+    -e PHP_VERSION=$version \
+    -e PHP_ZTS=$zts \
+    -v "$DIR"/ubuntu_packages:/vagrant \
+    -v "$DIR"/include:/vagrant/include \
+    cataphract/buildenv-fpm:bionic \
+    bash -c "cd /vagrant/php && make"
+}
+
+for version in "${VERSIONS[@]}"
+do
+  b $version 0
+  b $version 1
+done
+
+

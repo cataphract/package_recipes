@@ -5,7 +5,7 @@ function abs_path {
 }
 
 if [[ $# != 3 ]]; then
-  echo "Expected trusty/xenial/bionic/centos6 <dir> <name>" >&2
+  echo "Expected trusty/xenial/bionic/focal/centos6 <dir> <name>" >&2
   exit 1
 fi
 
