@@ -1,6 +1,5 @@
 ifeq ($(PHP_ZTS),1)
 ZTS_SUFFIX :=-zts
-ZTS_FLAG := --enable-maintainer-zts
 endif
 VERSION_REL := $(shell echo $(PHP_VERSION) | cut -d. -f1,2)
 NAME         := php-$(VERSION_REL)$(ZTS_SUFFIX)-bare-dbg
@@ -21,6 +20,11 @@ PACKAGE_URL := https://www.php.net/
 PACKAGE_DESCRIPTION := Debug PHP builds with no modules
 
 include ../include/base.mk
+
+MAJOR_VERSION := $(shell echo $(PHP_VERSION) | cut -d. -f1)
+ifeq ($(PHP_ZTS),1)
+ZTS_FLAG := $(shell test $(MAJOR_VERSION) -ge 8 && echo --enable-zts || echo --enable-maintainer-zts)
+endif
 
 fetch: standard_fetch
 extract: standard_extract
