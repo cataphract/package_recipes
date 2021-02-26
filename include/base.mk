@@ -128,9 +128,10 @@ standard_fetch: $(FETCHED_FILE_PATH)
 SUBDIR ?= $(NAME)-$(subst :,_,$(VERSION))
 SBUILDDIR = $(BUILDDIR)/$(SUBDIR)
 
+STRIP_COMPONENTS ?= 1
 standard_extract: fetch $(BUILDDIR)/.keep
 	mkdir -p $(SBUILDDIR)
-	bsdtar --strip-components=1 -C $(SBUILDDIR) \
+	bsdtar --strip-components=$(STRIP_COMPONENTS) -C $(SBUILDDIR) \
 		-xf '$(CACHEDIR)/$(FETCHED_FILE)'
 
 SDESTDIR = $(DESTDIR)/$(SUBDIR)
